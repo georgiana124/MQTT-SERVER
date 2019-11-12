@@ -1,5 +1,7 @@
-import tkinter as tk
 from tkinter import *
 
-root= tk.Tk()
-root.pack()
+root= Tk()
+w = Canvas(root, width=1400, height=900)
+w.pack()
+root.update()
+mainloop()
