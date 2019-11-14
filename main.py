@@ -11,6 +11,4 @@ mainloop()
 """
 #conn = connection.Connection()
 client = client.Client()
-ip = socket.gethostbyname('iot.eclipse.org')
 client.publish()
-print(ip)
