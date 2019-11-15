@@ -7,5 +7,7 @@ w.pack()
 root.update()
 mainloop()
 """
-client = client.Client()
+
+
+client = client.Client(0x01)
 client.connect()

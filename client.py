@@ -1,7 +1,7 @@
 """
 default host
 broker test host
-iot.eclipse.org
+mqtt.eclipse.org
 port 1883
 """
 import Connection as conn
@@ -64,14 +64,17 @@ class Client(object):
         variable_header = append_hex(variable_header, keep_alive)
         variable_header = append_hex(variable_header, proprieties)
         packet = append_hex(variable_header, self._client_id)
+
         self._connection.send(packet)
 
     def publish(self, dup=False, qos=0x01, retain=False):
+        """
         command = messages.PUBLISH << 4 | (dup & 0x1) << 3 | qos << 1 | retain
         command << 8
-        packet = bytearray(0x0)
+        packet = bytearray()
         packet.append(command)
         self._connection.send(packet)
+        """
 
     def subscribe(self):
         pass
