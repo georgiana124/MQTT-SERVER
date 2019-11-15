@@ -8,4 +8,4 @@ root.update()
 mainloop()
 """
 client = client.Client()
-client.publish()
+client.connect()
