@@ -26,7 +26,7 @@ class PacketTypes(object):
     # Dummy packet type for properties use - will delay only applies to will
     WILLMESSAGE = 99
 
-    Names = ["reserved", \
+    Names = ["reserved",
              "Connect", "Connack", "Publish", "Puback", "Pubrec", "Pubrel",
              "Pubcomp", "Subscribe", "Suback", "Unsubscribe", "Unsuback",
              "Pingreq", "Pingresp", "Disconnect", "Auth"]
