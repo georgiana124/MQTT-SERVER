@@ -5,7 +5,6 @@ mqtt.eclipse.org
 port 1883
 """
 import Connection as conn
-import message_types as messages
 
 
 def append_hex(a, b):
@@ -44,8 +43,8 @@ class Client(object):
         self._thread = None
 
     def connect(self):
-        protocol_name = 0x00044D515454  # 04MQTT
-        protocol_version = 0x05  # version =5
+        protocol_name = "1004MQTT"  # 04MQTT
+        protocol_version = "05"  # version =5
         """connect_flags bits
         username flag=1
         password flag =1
@@ -55,16 +54,19 @@ class Client(object):
         clean start=1
         reserved =0
         """
-        connect_flags = 0xCE
-        keep_alive = 0x0005  # keep alive LSB=10
-        proprieties = 0x05110000000A  # length = 5; session expiry interval =  10; session expiry interval identifier = 17
+        connect_flags = "CA"
+        keep_alive = "000A"  # keep alive LSB=10
+        proprieties = "05110"  # length = 5; session expiry interval =  10; session expiry interval identifier = 17
+        payload = self._client_id + self._username + self._password
+        """
         variable_header = append_hex(messages.CONNECT, protocol_name)
         variable_header = append_hex(variable_header, protocol_version)
         variable_header = append_hex(variable_header, connect_flags)
         variable_header = append_hex(variable_header, keep_alive)
         variable_header = append_hex(variable_header, proprieties)
         packet = append_hex(variable_header, self._client_id)
-
+        """
+        packet = protocol_name + protocol_version + connect_flags + keep_alive + proprieties + payload
         self._connection.send(packet)
 
     def publish(self, dup=False, qos=0x01, retain=False):
