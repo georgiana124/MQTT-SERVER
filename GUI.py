@@ -9,6 +9,8 @@ class GUI(object):
         self._button1 = Button(self._root, text="Close", command=self._root.quit)
         self._button1.place(bordermode=OUTSIDE, x=1200, y=800)
         self._root.bind("<Button-1>", self.motion)
+        self._v1 = StringVar()
+        self._v2 = StringVar()
 
         Label(self._root, text='Username').place(x=500, y=300)
         e1 = Entry(self._root)
@@ -18,10 +20,8 @@ class GUI(object):
 
         def callback():
             # Get the strings from the Entries
-            v1 = StringVar()
-            v2 = StringVar()
-            v1 = e1.get()
-            v2 = e2.get()
+            self.v1 = e1.get()
+            self.v2 = e2.get()
 
         Label(self._root, text='Password').place(x=500, y=330)
         e2 = Entry(self._root)
