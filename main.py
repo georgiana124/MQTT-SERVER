@@ -1,5 +1,9 @@
-import tkinter as tk
-from tkinter import *
+import client as client
+from GUI import *
 
-root= tk.Tk()
-root.pack()
+my_gui = GUI()
+
+"""
+client = client.Client("abc", username="admin", password="admin")
+client.connect()
+"""
