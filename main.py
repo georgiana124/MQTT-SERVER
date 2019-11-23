@@ -3,7 +3,5 @@ from GUI import *
 
 my_gui = GUI()
 
-"""
-client = client.Client("abc", username="admin", password="admin")
+client = client.Client("abc", username="GUI v1", password="GUI v2")
 client.connect()
-"""
