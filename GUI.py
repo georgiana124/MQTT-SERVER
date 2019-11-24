@@ -11,6 +11,8 @@ class GUI(object):
         self._root.bind("<Button-1>", self.motion)
         self._v1 = StringVar()
         self._v2 = StringVar()
+        self._isClicked = BooleanVar
+        self._isClicked = False
 
         Label(self._root, text='Username').place(x=500, y=300)
         e1 = Entry(self._root)
@@ -22,6 +24,7 @@ class GUI(object):
             # Get the strings from the Entries
             self.v1 = e1.get()
             self.v2 = e2.get()
+            self._isClicked = True
 
         Label(self._root, text='Password').place(x=500, y=330)
         e2 = Entry(self._root)
