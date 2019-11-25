@@ -8,30 +8,30 @@ class GUI(object):
         self.__root = Tk()
         self.__root.geometry("1400x900")
         self.__root.title("MQTT Client")
-        self.__button1 = Button(self.__root, text="Close", command=self.__root.quit)
-        self.__button1.place(bordermode=OUTSIDE, x=1200, y=800)
+        self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
+        self.__button_quit.place(bordermode=OUTSIDE, x=1200, y=800)
 
         def motion(event):
             print(event.x, event.y)
 
         self.__root.bind("<Button-1>", motion)
 
-        Label(self.__root, text='Username').place(x=500, y=300)
-        e1 = Entry(self.__root)
-        e1.focus_set()
+        self.__label_username = Label(self.__root, text='Username').place(x=500, y=300)
+        self.__entry_username = Entry(self.__root)
+        self.__entry_username.focus_set()
 
-        e1.place(x=590, y=300)
+        self.__entry_username.place(x=590, y=300)
 
         def callback():
             # Create a client object when the connect button is pressed
-            self.__client = Client(e1.get(), e2.get())
+            self.__client = Client(self.__entry_username.get(), self.__entry_username.get())
 
-        Label(self.__root, text='Password').place(x=500, y=330)
-        e2 = Entry(self.__root)
-        e2.place(x=590, y=330)
+        self.__label_password = Label(self.__root, text='Password').place(x=500, y=330)
+        self.__entry_password = Entry(self.__root)
+        self.__entry_password.place(x=590, y=330)
 
-        b = Button(self.__root, text="Connect", width=10, command=callback)
-        b.place(x=600, y=400)
+        self.__button_connect = Button(self.__root, text="Connect", width=10, command=callback)
+        self.__button_connect.place(x=600, y=400)
         self.__root.update()
         self.__root.mainloop()
 

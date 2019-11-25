@@ -1,5 +1,10 @@
 from GUI import *
 
-my_gui = GUI()
 
+def main():
+    my_gui = GUI()
+
+
+if __name__ == "__main__":
+    main()
 
