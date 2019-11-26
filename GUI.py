@@ -8,6 +8,7 @@ class GUI(object):
         self.__root = Tk()
         self.__root.geometry("1400x900")
         self.__root.title("MQTT Client")
+
         self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
         self.__button_quit.place(bordermode=OUTSIDE, x=1200, y=800)
 
@@ -19,7 +20,6 @@ class GUI(object):
         self.__label_username = Label(self.__root, text='Username').place(x=500, y=300)
         self.__entry_username = Entry(self.__root)
         self.__entry_username.focus_set()
-
         self.__entry_username.place(x=590, y=300)
 
         def callback():
@@ -27,11 +27,12 @@ class GUI(object):
             self.__client = Client(self.__entry_username.get(), self.__entry_username.get())
 
         self.__label_password = Label(self.__root, text='Password').place(x=500, y=330)
-        self.__entry_password = Entry(self.__root)
+        self.__entry_password = Entry(self.__root, show='*')
         self.__entry_password.place(x=590, y=330)
 
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=callback)
         self.__button_connect.place(x=600, y=400)
+
         self.__root.update()
         self.__root.mainloop()
 
