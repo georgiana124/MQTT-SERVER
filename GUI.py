@@ -22,13 +22,14 @@ class GUI(object):
         self.__entry_username.focus_set()
         self.__entry_username.place(x=590, y=300)
 
-        def callback():
-            # Create a client object when the connect button is pressed
-            self.__client = Client(self.__entry_username.get(), self.__entry_username.get())
-
         self.__label_password = Label(self.__root, text='Password').place(x=500, y=330)
         self.__entry_password = Entry(self.__root, show='*')
         self.__entry_password.place(x=590, y=330)
+
+        def callback():
+            # Create a client object when the connect button is pressed
+            self.__client = Client(1, username=self.__entry_username.get(), password=self.__entry_password.get())
+            self.__client.connect()
 
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=callback)
         self.__button_connect.place(x=600, y=400)
