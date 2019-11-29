@@ -9,7 +9,7 @@ import Connection as conn
 
 class Client(object):
 
-    def __init__(self, client_id, topic=None, username=None, password=None, keep_alive=60, message_retry=20):
+    def __init__(self, client_id, topic=None, username=None, password=None):
         self.__username = username
         self.__client_id = client_id
         self.__password = password
@@ -20,9 +20,8 @@ class Client(object):
 
     def connect(self):
         packet = bytearray(b'\x10\x0b\x04')
-        protocol_name = "MQTT"  # 04MQTT
+        protocol_name = "MQTT"
         packet.extend(protocol_name.encode('UTF-8'))
-
         """
             connect_flags bits
         username flag=1
