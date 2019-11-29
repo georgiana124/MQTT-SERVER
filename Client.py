@@ -15,9 +15,7 @@ class Client(object):
         self.__password = password
         self.__topic = topic
         self.__connection = conn.Connection()
-        self.__keep_alive = keep_alive
         self.__socket = None
-        self.__message_retry = message_retry
         self.__thread = None
 
     def connect(self):
@@ -34,9 +32,6 @@ class Client(object):
         will flag=1
         clean start=1
         reserved =0
-        connect_flags = "CA"
-        keep_alive = "000A"  # keep alive LSB=10
-        proprieties = "05110"  # length = 5; session expiry interval =  10; session expiry interval identifier = 17
         """
         packet.extend(b'\x05\x02\x05\x03')
         packet.extend(self.__client_id.encode('UTF-8'))
@@ -46,13 +41,7 @@ class Client(object):
         self.__connection.send(packet)
 
     def publish(self, dup=False, qos=0x01, retain=False):
-        """
-        command = messages.PUBLISH << 4 | (dup & 0x1) << 3 | qos << 1 | retain
-        command << 8
-        packet = bytearray()
-        packet.append(command)
-        self._connection.send(packet)
-        """
+        pass
 
     def subscribe(self):
         pass
