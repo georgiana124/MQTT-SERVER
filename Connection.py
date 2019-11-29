@@ -16,4 +16,4 @@ class Connection(object):
             traceback.print_exc()
 
     def send(self, packet):
-        self._socket.send(packet.encode("UTF-8"))
+        self._socket.send(packet)

@@ -1,5 +1,5 @@
 from tkinter import *
-from client import *
+from Client import *
 
 
 class GUI(object):

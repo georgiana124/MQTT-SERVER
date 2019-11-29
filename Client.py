@@ -7,19 +7,6 @@ port 1883
 import Connection as conn
 
 
-def append_hex(a, b):
-    sizeof_b = 0
-
-    # get size of b in bits
-    while (b >> sizeof_b) > 0:
-        sizeof_b += 1
-
-    # align answer to nearest 4 bits (hex digit)
-    sizeof_b += sizeof_b % 4
-
-    return (a << sizeof_b) | b
-
-
 class Client(object):
 
     def __init__(self, client_id, topic=None, username=None, password=None, keep_alive=60, message_retry=20):
@@ -43,7 +30,9 @@ class Client(object):
         self._thread = None
 
     def connect(self):
-        protocol_name = "1004MQTT"  # 04MQTT
+        packet = bytearray(b'\x10')
+        protocol_name = "04MQTT"  # 04MQTT
+        packet.extend(protocol_name.encode('UTF-8'))
         protocol_version = "05"  # version =5
         """connect_flags bits
         username flag=1
@@ -53,11 +42,13 @@ class Client(object):
         will flag=1
         clean start=1
         reserved =0
-        """
         connect_flags = "CA"
         keep_alive = "000A"  # keep alive LSB=10
         proprieties = "05110"  # length = 5; session expiry interval =  10; session expiry interval identifier = 17
-        payload = self._client_id + self._username + self._password
+        """
+        packet.extend(b'\xca\x00\x0a\x05\x11')
+
+        #payload = self._client_id + self._username + self._password
         """
         variable_header = append_hex(messages.CONNECT, protocol_name)
         variable_header = append_hex(variable_header, protocol_version)
@@ -66,7 +57,7 @@ class Client(object):
         variable_header = append_hex(variable_header, proprieties)
         packet = append_hex(variable_header, self._client_id)
         """
-        packet = protocol_name + protocol_version + connect_flags + keep_alive + proprieties + payload
+        #packet = protocol_name + protocol_version + connect_flags + keep_alive + proprieties + payload
         self._connection.send(packet)
 
     def publish(self, dup=False, qos=0x01, retain=False):
