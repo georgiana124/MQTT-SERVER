@@ -28,7 +28,7 @@ class GUI(object):
 
         def callback():
             # Create a client object when the connect button is pressed
-            self.__client = Client(1, username=self.__entry_username.get(), password=self.__entry_password.get())
+            self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())
             self.__client.connect()
 
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=callback)

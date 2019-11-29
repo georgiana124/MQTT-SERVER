@@ -10,31 +10,23 @@ import Connection as conn
 class Client(object):
 
     def __init__(self, client_id, topic=None, username=None, password=None, keep_alive=60, message_retry=20):
-        self._username = username
-        self._client_id = client_id
-        self._password = password
-        self._topic = topic
-        self._connection = conn.Connection()
-        self._keep_alive = keep_alive
-        self._socket = None
-        self._message_retry = message_retry
-        self._in_packet = {
-            "command": 0,
-            "have_remaining": 0,
-            "remaining_count": [],
-            "remaining_mult": 0,
-            "remaining_length": 0,
-            "packet": b"",
-            "pos": 0
-        }
-        self._thread = None
+        self.__username = username
+        self.__client_id = client_id
+        self.__password = password
+        self.__topic = topic
+        self.__connection = conn.Connection()
+        self.__keep_alive = keep_alive
+        self.__socket = None
+        self.__message_retry = message_retry
+        self.__thread = None
 
     def connect(self):
-        packet = bytearray(b'\x10')
-        protocol_name = "04MQTT"  # 04MQTT
+        packet = bytearray(b'\x10\x0b\x04')
+        protocol_name = "MQTT"  # 04MQTT
         packet.extend(protocol_name.encode('UTF-8'))
-        protocol_version = "05"  # version =5
-        """connect_flags bits
+
+        """
+            connect_flags bits
         username flag=1
         password flag =1
         will retain = 0
@@ -46,19 +38,12 @@ class Client(object):
         keep_alive = "000A"  # keep alive LSB=10
         proprieties = "05110"  # length = 5; session expiry interval =  10; session expiry interval identifier = 17
         """
-        packet.extend(b'\xca\x00\x0a\x05\x11')
+        packet.extend(b'\x05\x02\x05\x03')
+        packet.extend(self.__client_id.encode('UTF-8'))
+        #packet.extend(self.__username.encode('UTF-8'))
+        #packet.extend(self.__password.encode('UTF-8'))
 
-        #payload = self._client_id + self._username + self._password
-        """
-        variable_header = append_hex(messages.CONNECT, protocol_name)
-        variable_header = append_hex(variable_header, protocol_version)
-        variable_header = append_hex(variable_header, connect_flags)
-        variable_header = append_hex(variable_header, keep_alive)
-        variable_header = append_hex(variable_header, proprieties)
-        packet = append_hex(variable_header, self._client_id)
-        """
-        #packet = protocol_name + protocol_version + connect_flags + keep_alive + proprieties + payload
-        self._connection.send(packet)
+        self.__connection.send(packet)
 
     def publish(self, dup=False, qos=0x01, retain=False):
         """
