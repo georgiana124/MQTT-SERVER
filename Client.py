@@ -3,6 +3,22 @@ default host
 broker test host
 mqtt.eclipse.org
 port 1883
+
+CONNECT = 0x10
+CONNACK = 0x20
+PUBLISH = 0x30
+PUBACK = 0x40
+PUBREC = 0x50
+PUBREL = 0x62
+PUBCOMP = 0x70
+SUBSCRIBE = 0x82
+SUBACK = 0x90
+UNSUBSCRIBE = 0xA2
+UNSUBACK = 0xB0
+PINGREQ = 0xC0
+PINGRESP = 0xD0
+DISCONNECT = 0xE0
+AUTH = 0xF0
 """
 import Connection as conn
 
