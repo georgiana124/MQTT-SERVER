@@ -21,6 +21,7 @@ DISCONNECT = 0xE0
 AUTH = 0xF0
 """
 import Connection as conn
+CONNECT = b'\x10'
 
 
 class Client(object):
@@ -37,12 +38,11 @@ class Client(object):
 
     def connect(self):
         packet = bytearray()  # initialize the packet to be sent
-        packet_type = b'\x10'  # connect packet
         connect_flags = b'\x02'  # connect flags
         keep_alive = b'\x00\x05'  # keep alive
         properties = b'\x11\x00\x00\x00\x0a'  # properties
         variable_header = bytearray()  # initialize an empty byte array to create the variable header
-        packet += packet_type
+        packet += CONNECT
         variable_header += b'\x00'
         variable_header += bytes([len(self.__protocol_name)])
         variable_header += self.__protocol_name.encode('UTF-8')
