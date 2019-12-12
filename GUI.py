@@ -24,15 +24,15 @@ class GUI:
         self.__root.bind("<Button-1>", motion)
 
         self.__label_username = Label(self.__root, text='Username')
-        self.__label_username.place(x=500, y=300)
+        self.__label_username.place(x=self.__width/3, y=self.__height/5)
         self.__entry_username = Entry(self.__root)
         self.__entry_username.focus_set()
-        self.__entry_username.place(x=590, y=300)
+        self.__entry_username.place(x=self.__width/3+90, y=self.__height/5)
 
         self.__label_password = Label(self.__root, text='Password')
-        self.__label_password.place(x=500, y=330)
+        self.__label_password.place(x=self.__width/3, y=self.__height/5+30)
         self.__entry_password = Entry(self.__root, show='*')
-        self.__entry_password.place(x=590, y=330)
+        self.__entry_password.place(x=self.__width/3+90, y=self.__height/5+30)
 
         def connect_button_callback():
             # Create a client object when the connect button is pressed
@@ -40,16 +40,18 @@ class GUI:
             self.__client.connect()
             if self.__client.get_is_connected() is True:
                 # If we successfully connect to the broker we dispose the tkinter objects in the root and create the next state
-                self.dispose()
+                self.dispose_connect_gui()
 
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=connect_button_callback)
-        self.__button_connect.place(x=600, y=400)
+        self.__button_connect.place(x=self.__width/3+100, y=self.__height/5+100)
 
     def run(self):
         self.__root.mainloop()
 
-    def dispose(self):
+    def dispose_connect_gui(self):
         self.__button_quit.place_forget()
         self.__label_username.place_forget()
         self.__label_password.place_forget()
+        self.__entry_password.place_forget()
+        self.__entry_username.place_forget()
         self.__root.update()
