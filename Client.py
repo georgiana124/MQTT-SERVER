@@ -35,6 +35,7 @@ class Client(object):
         self.__socket = None
         self.__thread = None
         self.__protocol_name = "MQTT"
+        self.__is_connected = False
 
     def connect(self):
         packet = bytearray()  # initialize the packet to be sent
@@ -59,10 +60,22 @@ class Client(object):
         packet += packet_length  # add the length as bytes to the packet
         packet += variable_header  # add the whole variable_header to the packet
 
+        # Send the connect packet
         self.__connection.send(packet)
+        # Receive the response packet
+        received_packet = self.__connection.receive(1024)
+        # The received packet is an acknowledgement packet and the bytes received do not contain the header indentifier of the packet
+        if received_packet[3:4] == b'\x00':  # Verify the reason code; it is the 3rd byte: 0-> success
+            print("Connection acknowledged")
+            self.__is_connected = True
+        else:
+            print("Connection dropped")
 
     def publish(self, dup=False, qos=0x01, retain=False):
         pass
 
     def subscribe(self):
         pass
+
+    def get_is_connected(self):
+        return self.__is_connected

@@ -16,4 +16,7 @@ class Connection(object):
             traceback.print_exc()
 
     def send(self, packet):
-        self.__socket.send(packet)
+        self.__socket.sendall(packet)
+
+    def receive(self, byte_size):
+        return self.__socket.recv(byte_size)
