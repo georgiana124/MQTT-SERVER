@@ -23,12 +23,14 @@ class GUI:
         # Bind the motion function to be called whenever the left click is pressed
         self.__root.bind("<Button-1>", motion)
 
-        self.__label_username = Label(self.__root, text='Username').place(x=500, y=300)
+        self.__label_username = Label(self.__root, text='Username')
+        self.__label_username.place(x=500, y=300)
         self.__entry_username = Entry(self.__root)
         self.__entry_username.focus_set()
         self.__entry_username.place(x=590, y=300)
 
-        self.__label_password = Label(self.__root, text='Password').place(x=500, y=330)
+        self.__label_password = Label(self.__root, text='Password')
+        self.__label_password.place(x=500, y=330)
         self.__entry_password = Entry(self.__root, show='*')
         self.__entry_password.place(x=590, y=330)
 
@@ -48,6 +50,6 @@ class GUI:
 
     def dispose(self):
         self.__button_quit.place_forget()
-        self.__label_password.place_forget()
         self.__label_username.place_forget()
+        self.__label_password.place_forget()
         self.__root.update()
