@@ -21,6 +21,7 @@ DISCONNECT = 0xE0
 AUTH = 0xF0
 """
 import Connection as conn
+import threading
 CONNECT = b'\x10'
 CONNACK = b'\x20'
 PUBLISH = b'\x30'
@@ -38,7 +39,7 @@ DISCONNECT = b'\xE0'
 AUTH = b'\xF0'
 
 
-class Client(object):
+class Client:
 
     def __init__(self, client_id, topic=None, username=None, password=None):
         self.__username = username
@@ -46,7 +47,6 @@ class Client(object):
         self.__password = password
         self.__topic = topic
         self.__connection = conn.Connection()
-        self.__socket = None
         self.__thread = None
         self.__protocol_name = "MQTT"
         self.__is_connected = False
@@ -69,15 +69,12 @@ class Client(object):
         variable_header += b'\x00'
         variable_header += bytes([len(self.__username)])
         variable_header += self.__username.encode('UTF-8')
-
         packet_length = bytes([len(variable_header)])  # calculate the length of the remaining packet
         packet += packet_length  # add the length as bytes to the packet
         packet += variable_header  # add the whole variable_header to the packet
-
-        # Send the connect packet
-        self.__connection.send(packet)
-        # Receive the response packet
-        received_packet = self.__connection.receive(1024)
+        self.__connection.send(packet)  # Send the connect packet
+        received_packet = self.__connection.receive(1024)  # Receive the response packet
+        print(repr(received_packet))
         """The received packet is an acknowledgement packet 
         and the bytes received do not contain the header identifier of the packet"""
         if received_packet[3:4] == b'\x00':  # Verify the reason code; it is the 3rd byte: 0-> success
@@ -86,7 +83,7 @@ class Client(object):
         else:
             print("Connection dropped")
 
-    def publish(self, dup=False, qos=0x01, retain=False):
+    def publish(self):
         pass
 
     def subscribe(self):

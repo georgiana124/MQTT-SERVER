@@ -5,8 +5,7 @@ from Client import *
 class GUI:
 
     def __init__(self):
-        # Create the main root for the app
-        self.__root = Tk()
+        self.__root = Tk()  # Create the main root for the app
         self.__width = 800
         self.__height = 500
         # Create a root app based on the width and height defined
@@ -24,8 +23,7 @@ class GUI:
             pass
 
         def connect_button_callback():
-            # Create a client object when the connect button is pressed
-            self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())
+            self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())  # Create a client object when the connect button is pressed
             self.__client.connect()
             if self.__client.get_is_connected() is True:
                 """If we successfully connect to the broker
@@ -41,13 +39,11 @@ class GUI:
         self.__root.mainloop()
 
     def create_connect_gui(self):
-        # A motion callback function
-        def motion(event):
+        def motion(event):  # A motion callback function
             print(event.x, event.y)
 
         self.__button_quit.place(bordermode=OUTSIDE, x=self.__width / 10 * 9, y=self.__height / 10 * 9)
-        # Bind the motion function to be called whenever the left click is pressed
-        self.__root.bind("<Button-1>", motion)
+        self.__root.bind("<Button-1>", motion)  # Bind the motion function to be called whenever the left click is pressed
         self.__label_username.place(x=self.__width / 3, y=self.__height / 5)
         self.__entry_username.focus_set()
         self.__entry_username.place(x=self.__width / 3 + 90, y=self.__height / 5)
@@ -56,7 +52,6 @@ class GUI:
         self.__button_connect.place(x=self.__width / 3 + 100, y=self.__height / 5 + 100)
 
     def dispose_connect_gui(self):
-        self.__button_quit.place_forget()
         self.__label_username.place_forget()
         self.__label_password.place_forget()
         self.__entry_password.place_forget()
