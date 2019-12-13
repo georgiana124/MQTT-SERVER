@@ -64,7 +64,8 @@ class Client(object):
         self.__connection.send(packet)
         # Receive the response packet
         received_packet = self.__connection.receive(1024)
-        # The received packet is an acknowledgement packet and the bytes received do not contain the header indentifier of the packet
+        """The received packet is an acknowledgement packet 
+        and the bytes received do not contain the header identifier of the packet"""
         if received_packet[3:4] == b'\x00':  # Verify the reason code; it is the 3rd byte: 0-> success
             print("Connection acknowledged")
             self.__is_connected = True

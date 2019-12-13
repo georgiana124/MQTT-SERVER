@@ -14,9 +14,10 @@ class Connection(object):
             self.__socket.connect((host_ip, 1883))
         except socket.error:
             traceback.print_exc()
-
+    """Send a packet (bytearray ) with the socket created"""
     def send(self, packet):
         self.__socket.sendall(packet)
 
+    """Receive a packet(bytearray) with the socket created"""
     def receive(self, byte_size):
         return self.__socket.recv(byte_size)
