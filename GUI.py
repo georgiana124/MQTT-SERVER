@@ -17,6 +17,11 @@ class GUI:
         self.__label_password = Label(self.__root, text='Password')
         self.__entry_password = Entry(self.__root, show='*')
         self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
+        self.__entry_topic = Entry(self.__root)
+        self.__label_topic = Label(self.__root, text='Topic')
+
+        def send_callback():
+            pass
 
         def connect_button_callback():
             # Create a client object when the connect button is pressed
@@ -26,7 +31,9 @@ class GUI:
                 """If we successfully connect to the broker
                  we dispose the tkinter objects in the root and create the next state"""
                 self.dispose_connect_gui()
+                self.create_main_gui()
 
+        self.__button_send = Button(self.__root, text="Send", command=send_callback)
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=connect_button_callback)
         self.create_connect_gui()
 
@@ -56,3 +63,12 @@ class GUI:
         self.__entry_username.place_forget()
         self.__button_connect.place_forget()
         self.__root.update()
+
+    def create_main_gui(self):
+        self.__entry_topic.place(x=self.__width/3, y=self.__height/3)
+        self.__button_send.place(bordermode=OUTSIDE, x=self.__width/3+90, y=self.__height/3+30)
+        self.__label_topic.place(x=self.__width/3-60, y=self.__height/3)
+
+    def dispose_main_gui(self):
+        self.__entry_topic.place_forget()
+        self.__button_send.place_forget()

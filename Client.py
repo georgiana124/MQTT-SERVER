@@ -22,6 +22,20 @@ AUTH = 0xF0
 """
 import Connection as conn
 CONNECT = b'\x10'
+CONNACK = b'\x20'
+PUBLISH = b'\x30'
+PUBACK = b'\x40'
+PUBREC = b'\x50'
+PUBREL = b'\x62'
+PUBCOMP = b'\x70'
+SUBSCRIBE = b'\x82'
+SUBACK = b'\x90'
+UNSUBSCRIBE = b'\xA2'
+UNSUBACK = b'\xB0'
+PINGREQ = b'\xC0'
+PINGRESP = b'\xD0'
+DISCONNECT = b'\xE0'
+AUTH = b'\xF0'
 
 
 class Client(object):
