@@ -22,9 +22,4 @@ class Connection:
 
     """Receive a packet(bytearray) with the socket created"""
     def receive(self, byte_size):
-        packet = self.__socket.recv(byte_size)
-        inputs = [self.__socket]
-        outputs = []
-        readable, writable, exceptional = s.select(inputs, outputs, inputs)
-        print(readable)
-        return packet
+        return self.__socket.recv(byte_size)
