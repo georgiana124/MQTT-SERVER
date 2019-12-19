@@ -18,6 +18,8 @@ class GUI:
         self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
         self.__entry_topic = Entry(self.__root)
         self.__label_topic = Label(self.__root, text='Topic')
+        self.__text_box_receive = Text(self.__root, width=50, height=10)
+        self.__text_box_send = Text(self.__root, width=50, height=10)
 
         def send_callback():
             pass
@@ -60,10 +62,12 @@ class GUI:
         self.__root.update()
 
     def create_main_gui(self):
-        self.__entry_topic.place(x=self.__width/3, y=self.__height/3)
-        self.__button_send.place(bordermode=OUTSIDE, x=self.__width/3+90, y=self.__height/3+30)
-        self.__label_topic.place(x=self.__width/3-60, y=self.__height/3)
+        self.__entry_topic.place(x=self.__width/8, y=self.__height/7)
+        self.__button_send.place(bordermode=OUTSIDE, x=self.__width/8+45, y=self.__height/7+30)
+        self.__label_topic.place(x=self.__width/8-60, y=self.__height/7)
+        self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
 
     def dispose_main_gui(self):
         self.__entry_topic.place_forget()
         self.__button_send.place_forget()
+        self.__label_topic.place_forget()
