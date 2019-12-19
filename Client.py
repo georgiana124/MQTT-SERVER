@@ -99,5 +99,8 @@ class Client:
     def subscribe(self):
         pass
 
+    def unsubscribe(self):
+        pass
+
     def get_is_connected(self):
         return self.__is_connected
