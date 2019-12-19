@@ -47,28 +47,38 @@ class Client:
         self.__password = password
         self.__topic = topic
         self.__connection = conn.Connection()
+        self.__socket = None
         self.__thread = None
         self.__protocol_name = "MQTT"
         self.__is_connected = False
+        self.__packet_fields = {
+            'protocol_name': "MQTT",
+            'keep_alive': b'\x00\x05',  # keep alive
+            'properties': b'\x11\x00\x00\x00\x0a',  # properties
+            'connect_flags': b'\x02',  # connect flags
+            'version': b'\5'
+        }
 
     def connect(self):
         packet = bytearray()  # initialize the packet to be sent
-        connect_flags = b'\x02'  # connect flags
-        keep_alive = b'\x00\x05'  # keep alive
-        properties = b'\x11\x00\x00\x00\x0a'  # properties
+        # connect_flags = b'\x02'  # connect flags
+        # keep_alive = b'\x00\x05'  # keep alive
+        # properties = b'\x11\x00\x00\x00\x0a'  # properties
         variable_header = bytearray()  # initialize an empty byte array to create the variable header
         packet += CONNECT
         variable_header += b'\x00'
-        variable_header += bytes([len(self.__protocol_name)])
-        variable_header += self.__protocol_name.encode('UTF-8')
-        variable_header += b'\5'  # version 5
-        variable_header += connect_flags
-        variable_header += keep_alive
-        variable_header += bytes([len(properties)])
-        variable_header += properties
+        variable_header += bytes([len(self.__packet_fields['protocol_name'])])
+        variable_header += self.__packet_fields['protocol_name'].encode('UTF-8')
+        variable_header += self.__packet_fields['version']  # version 5
+        variable_header += self.__packet_fields['connect_flags']
+        variable_header += self.__packet_fields['keep_alive']
+        variable_header += bytes([len(self.__packet_fields['properties'])])
+        variable_header += self.__packet_fields['properties']
         variable_header += b'\x00'
-        variable_header += bytes([len(self.__username)])
-        variable_header += self.__username.encode('UTF-8')
+        payload = bytes([len(self.__username)])
+        payload += self.__username.encode('UTF-8')
+        variable_header += payload
+
         packet_length = bytes([len(variable_header)])  # calculate the length of the remaining packet
         packet += packet_length  # add the length as bytes to the packet
         packet += variable_header  # add the whole variable_header to the packet
