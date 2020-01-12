@@ -1,14 +1,15 @@
 from tkinter import *
 from Client import *
 
-
+""" The GUI class handles the front end of the app: what does the user see.
+    It uses tkinter and contains all the graphical elements. """
 class GUI:
 
     def __init__(self):
         self.__client = None
         self.__root = Tk()  # Create the main root for the app
-        self.__width = 800
-        self.__height = 500
+        self.__width = 1400
+        self.__height = 800
 
         """ Create a root app based on the width and height defined """
         self.__root.geometry(str(self.__width) + "x" + str(self.__height))
@@ -25,6 +26,7 @@ class GUI:
         self.__entry_username = Entry(self.__root)
         self.__entry_password = Entry(self.__root, show='*')
         self.__entry_topic = Entry(self.__root)
+        self.__entry_message_send = Entry(self.__root)
 
         """ Create the gui buttons """
         self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
@@ -61,37 +63,60 @@ class GUI:
             print(event.x, event.y)
 
         """ Place all the widgets on the frame to create the connect interface """
+        # Buttons
         self.__button_quit.place(bordermode=OUTSIDE, x=self.__width / 10 * 9, y=self.__height / 10 * 9)
         self.__root.bind("<Button-1>", motion)  # Bind the motion function to be called whenever the left click is pressed
+        self.__button_connect.place(x=self.__width / 3 + 100, y=self.__height / 5 + 100)
+
+        # Labels
         self.__label_username.place(x=self.__width / 3, y=self.__height / 5)
+        self.__label_password.place(x=self.__width / 3, y=self.__height / 5 + 30)
+
+        # Entries
         self.__entry_username.focus_set()
         self.__entry_username.place(x=self.__width / 3 + 90, y=self.__height / 5)
-        self.__label_password.place(x=self.__width / 3, y=self.__height / 5 + 30)
         self.__entry_password.place(x=self.__width / 3 + 90, y=self.__height / 5 + 30)
-        self.__button_connect.place(x=self.__width / 3 + 100, y=self.__height / 5 + 100)
 
     def dispose_connect_gui(self):
         """ This method deletes the position of the widgets from the connect interface
         but it doesn't destroy the widgets so we can use them later if needed """
-        self.__label_username.place_forget()
-        self.__label_password.place_forget()
-        self.__entry_password.place_forget()
-        self.__entry_username.place_forget()
-        self.__button_connect.place_forget()
-        self.__root.update()
+        if self.__client.get_is_connected() is False:
+            self.__label_username.place_forget()
+            self.__label_password.place_forget()
+            self.__entry_password.place_forget()
+            self.__entry_username.place_forget()
+            self.__button_connect.place_forget()
+            self.__root.update()
 
     def create_main_gui(self):
         """ create_main_gui method places all the widgets necessary for the main interface """
+        # Entries
         self.__entry_topic.place(x=self.__width/8, y=self.__height/7)
-        self.__button_send.place(bordermode=OUTSIDE, x=self.__width/8+45, y=self.__height/7+30)
+        self.__entry_message_send.place(x=self.__width/8, y=self.__height/7+30)
+
+        # Buttons
+        self.__button_send.place(bordermode=OUTSIDE, x=self.__width/8+45, y=self.__height/7+60)
+
+        # Labels
         self.__label_topic.place(x=self.__width/8-60, y=self.__height/7)
+        self.__label_send_message.place(x=self.__width/8-60, y=self.__height/7+30)
+
+        # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
 
     def dispose_main_gui(self):
         """ This method deletes the position of the widgets from the main interface
         but it doesn't destroy the widgets so we can use them later if needed """
+        # Entries
         self.__entry_topic.place_forget()
+        self.__entry_message_send.forget()
+
+        # Buttons
         self.__button_send.place_forget()
+
+        # Labels
         self.__label_topic.place_forget()
+
+        # Text boxes
         self.__text_box_receive.place_forget()
         self.__text_box_send.place_forget()

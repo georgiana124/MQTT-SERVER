@@ -1,8 +1,7 @@
 import socket
 import traceback
-import select as s
 
-
+""" Create an Connection class to handle the packets transfer on the socket. """
 class Connection:
 
     def __init__(self):
@@ -16,10 +15,10 @@ class Connection:
         except socket.error:
             traceback.print_exc()
 
-    """Send a packets(bytearray) with the socket created"""
+    """Send a packets(byte array) with the socket created"""
     def send(self, packet):
         self.__socket.sendall(packet)
 
-    """Receive a packets(bytearray) with the socket created"""
+    """Receive a packets(byte array) with the socket created"""
     def receive(self, byte_size):
         return self.__socket.recv(byte_size)
