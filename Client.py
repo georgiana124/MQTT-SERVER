@@ -21,7 +21,8 @@ DISCONNECT = 0xE0
 AUTH = 0xF0
 """
 import Connection as conn
-import packets
+from mqtt_packets import *
+
 CONNECT = b'\x10'
 CONNACK = b'\x20'
 PUBLISH = b'\x30'
