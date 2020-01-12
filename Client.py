@@ -10,10 +10,11 @@ from mqtt_packets import *
 """ The Client class defines the behaviour of the user. """
 class Client:
 
-    def __init__(self, client_id, topic=None, username=None, password=None):
+    def __init__(self, client_id, topic=None, username=None, password=None, host_ip=None):
         self.__username = username
         self.__client_id = client_id
         self.__password = password
+        self.__host_ip = host_ip
         self.__topic = topic
         self.__connection = conn.Connection()
         self.__thread = None
@@ -28,6 +29,10 @@ class Client:
 
     """ Defining the connect action. """
     def connect(self):
+        self.__connection.establish_connection()
+        if self.__host_ip is not None:
+            self.__connection.set_host_ip(self.__host_ip)
+
         connect_packet = Connect()
         connect_packet.set_username(self.__username)
         connect_packet.set_password(self.__password)
