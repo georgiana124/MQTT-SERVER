@@ -10,6 +10,7 @@ class Connection:
         self.__socket.settimeout(30)
         self.__host_ip = socket.gethostbyname('mqtt.eclipse.org')
 
+    """ Create the actual connection of the socket to the given host ip. """
     def establish_connection(self):
         print("ip:", self.__host_ip)
         try:
