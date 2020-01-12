@@ -43,22 +43,23 @@ class GUI:
     def __send_callback(self):
         self.__client.publish()
 
+    """ The connect callback function """
     def __connect_button_callback(self):
-        """ The connect callback function """
         self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())  # Create a client object when the connect button is pressed
         self.__client.connect()
+
         if self.__client.get_is_connected() is True:
             """If we successfully connect to the broker
             we dispose the tkinter objects in the root and create the next state"""
             self.dispose_connect_gui()
             self.create_main_gui()
 
+    """ This method starts the tkinter event loop """
     def run(self):
-        """ This method starts the tkinter event loop """
         self.__root.mainloop()
 
+    """ This method creates the connect interface """
     def create_connect_gui(self):
-        """ This method creates the connect interface """
         def motion(event):  # A motion callback function
             print(event.x, event.y)
 
@@ -77,19 +78,24 @@ class GUI:
         self.__entry_username.place(x=self.__width / 3 + 90, y=self.__height / 5)
         self.__entry_password.place(x=self.__width / 3 + 90, y=self.__height / 5 + 30)
 
-    def dispose_connect_gui(self):
-        """ This method deletes the position of the widgets from the connect interface
+    """ This method deletes the position of the widgets from the connect interface
         but it doesn't destroy the widgets so we can use them later if needed """
-        if self.__client.get_is_connected() is False:
-            self.__label_username.place_forget()
-            self.__label_password.place_forget()
-            self.__entry_password.place_forget()
-            self.__entry_username.place_forget()
-            self.__button_connect.place_forget()
-            self.__root.update()
+    def dispose_connect_gui(self):
+        # Labels
+        self.__label_username.place_forget()
+        self.__label_password.place_forget()
 
+        # Entries
+        self.__entry_password.place_forget()
+        self.__entry_username.place_forget()
+
+        # Buttons
+        self.__button_connect.place_forget()
+
+        self.__root.update()
+
+    """ Create_main_gui method places all the widgets necessary for the main interface """
     def create_main_gui(self):
-        """ create_main_gui method places all the widgets necessary for the main interface """
         # Entries
         self.__entry_topic.place(x=self.__width/8, y=self.__height/7)
         self.__entry_message_send.place(x=self.__width/8, y=self.__height/7+30)
@@ -104,9 +110,9 @@ class GUI:
         # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
 
-    def dispose_main_gui(self):
-        """ This method deletes the position of the widgets from the main interface
+    """ This method deletes the position of the widgets from the main interface
         but it doesn't destroy the widgets so we can use them later if needed """
+    def dispose_main_gui(self):
         # Entries
         self.__entry_topic.place_forget()
         self.__entry_message_send.forget()
