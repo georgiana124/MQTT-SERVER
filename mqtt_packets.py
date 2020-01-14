@@ -39,10 +39,10 @@ class Connect(Packet):
     qos = 0
 
     packet_payload = {
-        'client_id': b'',  """ identifies the client to the server; it must be present; must be encoded string UTF-8"""
-        'will_topic': b'',  """ if the will flag is set will properties is the next field in payload """
-        'will_topic': b'',
-        'will_payload': b'',
+        'client_id': bytearray(),  """ identifies the client to the server; it must be present; must be encoded string UTF-8"""
+        'will_topic': bytearray(),  """ if the will flag is set will properties is the next field in payload """
+        'will_topic': bytearray(),
+        'will_payload': bytearray(),
         'username': "",
         'password': ""
     }

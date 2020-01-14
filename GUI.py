@@ -21,17 +21,20 @@ class GUI:
         self.__label_receive_message = Label(self.__root, text='Received message')
         self.__label_send_message = Label(self.__root, text='Send Message')
         self.__label_topic = Label(self.__root, text='Topic')
+        self.__label_subscribe_to = Label(self.__root, text='Subscribe to')
 
         """ Create the gui entries """
         self.__entry_username = Entry(self.__root)
         self.__entry_password = Entry(self.__root, show='*')
         self.__entry_topic = Entry(self.__root)
         self.__entry_message_send = Entry(self.__root)
+        self.__entry_subscribe = Entry(self.__root)
 
         """ Create the gui buttons """
         self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
         self.__button_send = Button(self.__root, text="Send", command=self.__send_callback)
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=self.__connect_button_callback)
+        self.__button_subscribe = Button(self.__root, text="Subscribe", width=10, command=self.__subscribe_button_callback)
 
         """ Create the gui text box """
         self.__text_box_receive = Text(self.__root, width=50, height=10)
@@ -42,6 +45,9 @@ class GUI:
 
     def __send_callback(self):
         self.__client.publish()
+
+    def __subscribe_button_callback(self):
+        self.__client.subscribe()
 
     """ The connect callback function """
     def __connect_button_callback(self):
@@ -99,13 +105,16 @@ class GUI:
         # Entries
         self.__entry_topic.place(x=self.__width/8, y=self.__height/7)
         self.__entry_message_send.place(x=self.__width/8, y=self.__height/7+30)
+        self.__entry_subscribe.place(x=self.__width/8, y=self.__height*3/7)
 
         # Buttons
         self.__button_send.place(bordermode=OUTSIDE, x=self.__width/8+45, y=self.__height/7+60)
+        self.__button_subscribe.place(border=OUTSIDE, x=self.__width/8+30, y=self.__height*3/7+30)
 
         # Labels
         self.__label_topic.place(x=self.__width/8-60, y=self.__height/7)
         self.__label_send_message.place(x=self.__width/8-110, y=self.__height/7+30)
+        self.__label_subscribe_to.place(x=self.__width/8-100, y=self.__height*3/7)
 
         # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
@@ -116,13 +125,18 @@ class GUI:
         # Entries
         self.__entry_topic.place_forget()
         self.__entry_message_send.forget()
+        self.__entry_subscribe.place_forget()
 
         # Buttons
         self.__button_send.place_forget()
+        self.__button_subscribe.place_forget()
 
         # Labels
         self.__label_topic.place_forget()
+        self.__label_subscribe_to.place_forget()
 
         # Text boxes
         self.__text_box_receive.place_forget()
         self.__text_box_send.place_forget()
+
+        self.__root.update()
