@@ -105,7 +105,7 @@ class GUI:
 
         # Labels
         self.__label_topic.place(x=self.__width/8-60, y=self.__height/7)
-        self.__label_send_message.place(x=self.__width/8-60, y=self.__height/7+30)
+        self.__label_send_message.place(x=self.__width/8-110, y=self.__height/7+30)
 
         # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)

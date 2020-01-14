@@ -19,13 +19,6 @@ class Client:
         self.__connection = conn.Connection()
         self.__thread = None
         self.__is_connected = False
-        self.__packet_fields = {
-            'protocol_name': "MQTT",
-            'keep_alive': b'\x00\x05',  # keep alive
-            'properties': b'\x11\x00\x00\x00\x0a',  # properties
-            'connect_flags': b'\x02',  # connect flags
-            'version': b'\5'
-        }
 
     """ Defining the connect action. """
     def connect(self):
@@ -40,7 +33,7 @@ class Client:
         packet = connect_packet.parse()
 
         self.__connection.send(packet)  # Send the connect packet
-        received_packet = self.__connection.receive(1024)  # Receive the response packet
+        received_packet = self.__connection.receive(2048)  # Receive the response packet
         print(repr(received_packet))
         """The received packet is an acknowledgement packet 
         and the bytes received do not contain the header identifier of the packet"""
