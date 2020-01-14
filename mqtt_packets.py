@@ -95,17 +95,52 @@ class Connect(Packet):
 
 class Disconnect(Packet):
 
+    variable_header = {
+        'reason_code': b'\x00',
+        'properties': b'\x05\x11\x00\x00\x00\x00'  
+        """ length(variable byte integer) =5(x05)->expiry interval = 17(x11)-> 
+            session expiry interval = 0(x00x00x00x00)"""
+    }
+
     def parse(self):
         packet = bytearray()
+        packet += self.packet_fixed_header['DISCONNECT']
+
+        variable_header = self.variable_header['reason_code']
+        variable_header += self.variable_header['properties']
+
+        remaining_legth = bytes([len(variable_header)])
+
+        packet += remaining_legth
+        packet += variable_header
+
         return packet
 
 class Publish(Packet):
+
+    variable_header = {
+        'topic_name': bytearray(),  # string utf8 encoded
+        'packet_identifier': '\x00\x0a',
+        'properties': b'\x00'  # no properties
+    }
 
     def parse(self):
         packet = bytearray()
         return packet
 
 class Subscribe(Packet):
+
+    """ Contains only the field packet identifier and properties. """
+    variable_header = {
+        'packet_identifier': b'',
+        'properties': b''
+    }
+
+    """ The payload contains a list of topic filters indicating the topics to which
+        the client wants to subscribe. """
+    payload = {
+
+    }
 
     def parse(self):
         packet = bytearray()
