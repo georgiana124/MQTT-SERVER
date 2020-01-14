@@ -142,7 +142,9 @@ class Subscribe(Packet):
         'packet_identifier': b'\x00\x0a',
         'properties': b'\x00'
     }
+
     topic_list = []
+
     """ The payload contains a list of topic filters indicating the topics to which
         the client wants to subscribe. """
     payload = {
