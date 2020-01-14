@@ -61,6 +61,7 @@ class Client:
     """ Defining the subscribe action. """
     def subscribe(self):
         subscribe_packet = Subscribe()
+        subscribe_packet.set_topics(self.__topics)
         packet = subscribe_packet.parse()
 
         self.__connection.send(packet)

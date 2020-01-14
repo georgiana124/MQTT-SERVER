@@ -150,6 +150,9 @@ class Subscribe(Packet):
         'subscription_options': bytearray()  # this field indicates the number of the topic to be subscribed
     }
 
+    def set_topics(self, _topics):
+        self.topic_list = _topics
+
     def parse(self):
         packet = bytearray()
         variable_header = bytearray()
@@ -166,6 +169,7 @@ class Subscribe(Packet):
             index += 1
             aux_payload = bytearray()
             length_topic = len(topic)
+            aux_payload += b'\x00'
             aux_payload += bytes([length_topic])
             aux_payload += topic.encode('UTF-8')
             aux_payload += bytes([index])

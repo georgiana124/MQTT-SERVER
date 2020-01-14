@@ -61,7 +61,6 @@ class GUI:
     def __connect_button_callback(self):
         self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())  # Create a client object when the connect button is pressed
         self.__client.connect()
-
         if self.__client.get_is_connected() is True:
             """If we successfully connect to the broker
             we dispose the tkinter objects in the root and create the next state"""
@@ -74,13 +73,9 @@ class GUI:
 
     """ This method creates the connect interface """
     def create_connect_gui(self):
-        def motion(event):  # A motion callback function
-            print(event.x, event.y)
-
         """ Place all the widgets on the frame to create the connect interface """
         # Buttons
         self.__button_quit.place(bordermode=OUTSIDE, x=self.__width / 10 * 9, y=self.__height / 10 * 9)
-        self.__root.bind("<Button-1>", motion)  # Bind the motion function to be called whenever the left click is pressed
         self.__button_connect.place(x=self.__width / 3 + 100, y=self.__height / 5 + 100)
 
         # Labels
@@ -92,9 +87,6 @@ class GUI:
         self.__entry_username.place(x=self.__width / 3 + 90, y=self.__height / 5)
         self.__entry_password.place(x=self.__width / 3 + 90, y=self.__height / 5 + 30)
 
-    """ This method deletes the position of the widgets from the connect interface
-        but it doesn't destroy the widgets so we can use them later if needed """
-
     def __disconnect_callback(self):
         self.__client.disconnect()
 
@@ -104,6 +96,8 @@ class GUI:
             self.dispose_main_gui()
             self.create_connect_gui()
 
+    """ This method deletes the position of the widgets from the connect interface
+    but it doesn't destroy the widgets so we can use them later if needed. """
     def dispose_connect_gui(self):
         # Labels
         self.__label_username.place_forget()
