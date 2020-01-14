@@ -101,6 +101,9 @@ class Disconnect(Packet):
 
 class Publish(Packet):
 
+    def set_topic(self,_topic):
+        self.packet.payload['topic'] = _topic
+
     def parse(self):
         packet = bytearray()
         return packet

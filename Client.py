@@ -48,6 +48,7 @@ class Client:
 
     def publish(self):
         publish_packet = Publish()
+        publish_packet.set_topic(self.__topic)
 
     def subscribe(self):
         subscribe_packet = Subscribe()
