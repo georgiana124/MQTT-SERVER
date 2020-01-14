@@ -41,19 +41,22 @@ class GUI:
         """ Create the gui text box """
         self.__text_box_receive = Text(self.__root, width=50, height=10)
         self.__text_box_send = Text(self.__root, width=50, height=10)
-        self.__text_box_recieve_subscribed = Text(self.__root, width=50, height=10)
+        self.__text_box_receive_subscribed = Text(self.__root, width=50, height=10)
         """ Create the connect interface """
         self.create_connect_gui()
 
     def __send_callback(self):
-        self.__text_box_receive.delete('1.0', END) #Delete text box content before showing new published content
         self.__text_box_receive.config(state=NORMAL)
+        self.__text_box_receive.delete('1.0', END) #Delete text box content before showing new published content
         #self.__client.publish()
         self.__text_box_receive.insert(INSERT, "ASC")
         self.__text_box_receive.config(state=DISABLED)
 
     def __subscribe_button_callback(self):
+        self.__text_box_receive_subscribed.config(state=NORMAL)
+        self.__text_box_receive_subscribed.delete('1.0', END)  # Delete text box content before showing new received content
         self.__client.subscribe()
+        self.__text_box_receive_subscribed.config(state=DISABLED)
 
     """ The connect callback function """
     def __connect_button_callback(self):
@@ -135,7 +138,7 @@ class GUI:
 
         # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
-        self.__text_box_recieve_subscribed.place(x=self.__width/5*2,y=self.__height/7*3)
+        self.__text_box_receive_subscribed.place(x=self.__width/5*2,y=self.__height/7*3)
 
 
     """ This method deletes the position of the widgets from the main interface
@@ -159,6 +162,6 @@ class GUI:
         # Text boxes
         self.__text_box_receive.place_forget()
         self.__text_box_send.place_forget()
-        self.__text_box_recieve_subscribed.place_forget()
+        self.__text_box_receive_subscribed.place_forget()
 
         self.__root.update()
