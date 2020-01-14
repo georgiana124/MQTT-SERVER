@@ -14,6 +14,7 @@ class GUI:
         """ Create a root app based on the width and height defined """
         self.__root.geometry(str(self.__width) + "x" + str(self.__height))
         self.__root.title("MQTT Client")
+        self.__root.configure(background='#40E0D0')
 
         """ Create the gui labels """
         self.__label_username = Label(self.__root, text='Username')
@@ -33,6 +34,7 @@ class GUI:
         """ Create the gui buttons """
         self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
         self.__button_send = Button(self.__root, text="Send", command=self.__send_callback)
+        self.__button_disconnect = Button(self.__root, text="Disconnect", command=self.__disconnect_callback)
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=self.__connect_button_callback)
         self.__button_subscribe = Button(self.__root, text="Subscribe", width=10, command=self.__subscribe_button_callback)
 
@@ -86,6 +88,15 @@ class GUI:
 
     """ This method deletes the position of the widgets from the connect interface
         but it doesn't destroy the widgets so we can use them later if needed """
+
+    def __disconnect_callback(self):
+        self.__client.disconnect()
+
+        if self.__client.get_is_disconnected() is True:
+            """ If we successfully disconnect from the broker
+            we go back to the connect page"""
+            self.create_connect_gui()
+
     def dispose_connect_gui(self):
         # Labels
         self.__label_username.place_forget()
@@ -110,6 +121,7 @@ class GUI:
         # Buttons
         self.__button_send.place(bordermode=OUTSIDE, x=self.__width/8+45, y=self.__height/7+60)
         self.__button_subscribe.place(border=OUTSIDE, x=self.__width/8+30, y=self.__height*3/7+30)
+        self.__button_disconnect.place(bordermode=OUTSIDE, x=self.__width / 10 * 9, y=self.__height / 10 * 8.5)
 
         # Labels
         self.__label_topic.place(x=self.__width/8-60, y=self.__height/7)
