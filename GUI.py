@@ -1,9 +1,10 @@
 from tkinter import *
 from Client import *
 
-""" The GUI class handles the front end of the app: what does the user see.
-    It uses tkinter and contains all the graphical elements. """
+
 class GUI:
+    """ The GUI class handles the front end of the app: what does the user see.
+        It uses tkinter and contains all the graphical elements. """
 
     def __init__(self):
         self.__client = None
@@ -65,13 +66,13 @@ class GUI:
         self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())  # Create a client object when the connect button is pressed
         self.__client.connect()
         if self.__client.get_is_connected() is True:
-            """If we successfully connect to the broker
-            we dispose the tkinter objects in the root and create the next state"""
+            """ If we successfully connect to the broker
+            we dispose the tkinter objects in the root and create the next state """
             self.dispose_connect_gui()
             self.create_main_gui()
 
-    """ This method starts the tkinter event loop """
     def run(self):
+        """ This method starts the tkinter event loop """
         self.__root.mainloop()
 
     """ This method creates the connect interface """
