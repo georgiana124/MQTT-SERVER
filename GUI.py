@@ -92,9 +92,10 @@ class GUI:
     def __disconnect_callback(self):
         self.__client.disconnect()
 
-        if self.__client.get_is_disconnected() is True:
+        if self.__client.get_is_connected() is False:
             """ If we successfully disconnect from the broker
             we go back to the connect page"""
+            self.dispose_main_gui()
             self.create_connect_gui()
 
     def dispose_connect_gui(self):
@@ -136,16 +137,18 @@ class GUI:
     def dispose_main_gui(self):
         # Entries
         self.__entry_topic.place_forget()
-        self.__entry_message_send.forget()
+        self.__entry_message_send.place_forget()
         self.__entry_subscribe.place_forget()
 
         # Buttons
         self.__button_send.place_forget()
         self.__button_subscribe.place_forget()
+        self.__button_disconnect.place_forget()
 
         # Labels
         self.__label_topic.place_forget()
         self.__label_subscribe_to.place_forget()
+        self.__label_send_message.place_forget()
 
         # Text boxes
         self.__text_box_receive.place_forget()

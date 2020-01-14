@@ -98,21 +98,22 @@ class Disconnect(Packet):
     variable_header = {
         'reason_code': b'\x00',
         'properties': b'\x05\x11\x00\x00\x00\x00'  
-        """ length(variable byte integer) =5(x05)->expiry interval = 17(x11)-> 
-            session expiry interval = 0(x00x00x00x00)"""
+
     }
 
     def parse(self):
         packet = bytearray()
         packet += self.packet_fixed_header['DISCONNECT']
 
-        variable_header = self.variable_header['reason_code']
-        variable_header += self.variable_header['properties']
+        variable_header_packet = bytearray()
 
-        remaining_legth = bytes([len(variable_header)])
+        variable_header_packet += self.variable_header['reason_code']
+        variable_header_packet += self.variable_header['properties']
 
-        packet += remaining_legth
-        packet += variable_header
+        remaining_length = bytes([len(variable_header_packet)])
+
+        packet += remaining_length
+        packet += variable_header_packet
 
         return packet
 

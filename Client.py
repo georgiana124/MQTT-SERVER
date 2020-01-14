@@ -49,6 +49,7 @@ class Client:
         packet = disconnect_packet.parse()
 
         self.__connection.send(packet)
+        self.__is_connected = False
 
     """ Defining the publish action. """
     def publish(self):
