@@ -43,18 +43,34 @@ class Client:
         else:
             print("Connection dropped")
 
+    """ Defining the disconnect action. """
     def disconnect(self):
         disconnect_packet = Disconnect()
+        packet = disconnect_packet.parse()
 
+        self.__connection.send(packet)
+        self.__is_connected = False
+
+    """ Defining the publish action. """
     def publish(self):
         publish_packet = Publish()
-        publish_packet.set_topic(self.__topic)
+        packet = publish_packet.parse()
 
+        self.__connection.send(packet)
+
+    """ Defining the subscribe action. """
     def subscribe(self):
         subscribe_packet = Subscribe()
+        packet = subscribe_packet.parse()
 
+        self.__connection.send(packet)
+
+    """ Defining the unsubscribe action. """
     def unsubscribe(self):
         unsubscribe_packet = Unsubscribe()
+        packet = unsubscribe_packet.parse()
+
+        self.__connection.send(packet)
 
     def get_is_connected(self):
         return self.__is_connected
