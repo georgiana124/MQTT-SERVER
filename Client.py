@@ -15,7 +15,7 @@ class Client:
         self.__client_id = client_id
         self.__password = password
         self.__host_ip = host_ip
-        self.__topic = topic
+        self.__topics = []
         self.__connection = conn.Connection()
         self.__thread = None
         self.__is_connected = False
@@ -74,3 +74,6 @@ class Client:
 
     def get_is_connected(self):
         return self.__is_connected
+
+    def add_topic(self, _topic):
+        self.__topics.append(_topic)

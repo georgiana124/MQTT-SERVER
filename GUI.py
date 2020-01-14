@@ -46,13 +46,15 @@ class GUI:
         self.create_connect_gui()
 
     def __send_callback(self):
-        self.__text_box_receive.delete('1.0', END) #Delete text box content before showing new published content
+        self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
         self.__text_box_receive.config(state=NORMAL)
-        #self.__client.publish()
+        # self.__client.publish()
         self.__text_box_receive.insert(INSERT, "ASC")
         self.__text_box_receive.config(state=DISABLED)
 
     def __subscribe_button_callback(self):
+        topic_subscribe = self.__entry_subscribe.get()
+        self.__client.add_topic(topic_subscribe)
         self.__client.subscribe()
 
     """ The connect callback function """
@@ -135,8 +137,7 @@ class GUI:
 
         # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
-        self.__text_box_recieve_subscribed.place(x=self.__width/5*2,y=self.__height/7*3)
-
+        self.__text_box_recieve_subscribed.place(x=self.__width/5*2, y=self.__height/7*3)
 
     """ This method deletes the position of the widgets from the main interface
         but it doesn't destroy the widgets so we can use them later if needed """
