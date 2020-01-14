@@ -93,10 +93,11 @@ class Connect(Packet):
         return packet
 
 
+""" Implement Disconnect class. This class creates the disconnect packet to be sent into the socket connection. """
 class Disconnect(Packet):
 
     variable_header = {
-        'reason_code': b'\x00',
+        'reason_code': b'\x00',  # the reason code
         'properties': b'\x05\x11\x00\x00\x00\x00'  
 
     }
@@ -117,6 +118,8 @@ class Disconnect(Packet):
 
         return packet
 
+
+""" Implement Publish class. This class creates a publish packet based on some options. """
 class Publish(Packet):
 
     variable_header = {
@@ -129,18 +132,22 @@ class Publish(Packet):
         packet = bytearray()
         return packet
 
+
+""" Implement Subscribe class. This class creates the subscribe packet to be sent into the socket. 
+    Every subscribe packet MUST contain a payload field. """
 class Subscribe(Packet):
 
     """ Contains only the field packet identifier and properties. """
     variable_header = {
-        'packet_identifier': b'',
-        'properties': b''
+        'packet_identifier': b'\x00\x0a',
+        'properties': b'\x00'
     }
-
+    topic_list = []
     """ The payload contains a list of topic filters indicating the topics to which
         the client wants to subscribe. """
     payload = {
-
+        'topic_filter': bytearray(),  # the length of the topic as chars and the topic encoded as utf8
+        'subscription_options': bytearray()  # this field indicates the number of the topic to be subscribed
     }
 
     def parse(self):
@@ -149,10 +156,31 @@ class Subscribe(Packet):
         payload = bytearray()
 
         packet += self.packet_fixed_header['SUBSCRIBE']
-        remain_length = bytes()
+
+        variable_header += self.variable_header['packet_identifier']
+        variable_header += self.variable_header['properties']
+
+        index = 0
+
+        for topic in self.topic_list:
+            index += 1
+            aux_payload = bytearray()
+            length_topic = len(topic)
+            aux_payload += bytes([length_topic])
+            aux_payload += topic.encode('UTF-8')
+            aux_payload += bytes([index])
+            payload += aux_payload
+
+        variable_header += payload
+
+        remain_length = bytes([len(variable_header)])
+        packet += remain_length
+        packet += variable_header
 
         return packet
 
+
+""" The Unsubscribe class. """
 class Unsubscribe(Packet):
 
     def parse(self):
