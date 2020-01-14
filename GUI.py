@@ -136,7 +136,6 @@ class GUI:
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
         self.__text_box_receive_subscribed.place(x=self.__width/5*2,y=self.__height/7*3)
 
-
     """ This method deletes the position of the widgets from the main interface
         but it doesn't destroy the widgets so we can use them later if needed """
     def dispose_main_gui(self):
