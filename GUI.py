@@ -46,8 +46,9 @@ class GUI:
         self.create_connect_gui()
 
     def __send_callback(self):
-        self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
-        # self.__client.publish()
+        self.__text_box_receive.delete('1.0', END) #Delete text box content before showing new published content
+        self.__text_box_receive.config(state=NORMAL)
+        #self.__client.publish()
         self.__text_box_receive.insert(INSERT, "ASC")
         self.__text_box_receive.config(state=DISABLED)
 
@@ -158,5 +159,6 @@ class GUI:
         # Text boxes
         self.__text_box_receive.place_forget()
         self.__text_box_send.place_forget()
+        self.__text_box_recieve_subscribed.place_forget()
 
         self.__root.update()
