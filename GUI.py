@@ -11,11 +11,12 @@ class GUI:
         self.__root = Tk()  # Create the main root for the app
         self.__width = 1400
         self.__height = 800
+        self.__log_col = 0
 
         """ Create a root app based on the width and height defined """
         self.__root.geometry(str(self.__width) + "x" + str(self.__height))
         self.__root.title("MQTT Client")
-        self.__root.configure(background='#40E0D0')
+        self.__root.configure(background='PeachPuff2')
 
         """ Create the gui labels """
         self.__label_username = Label(self.__root, text='Username')
@@ -43,8 +44,18 @@ class GUI:
         self.__text_box_receive = Text(self.__root, width=50, height=10)
         self.__text_box_send = Text(self.__root, width=50, height=10)
         self.__text_box_receive_subscribed = Text(self.__root, width=50, height=10)
+        self.__log =Text(self.__root, width=30, height=3)
         """ Create the connect interface """
         self.create_connect_gui()
+
+    def __log_increase(self):
+            self.__log_col += 1  # Increase column numbers in log box
+
+    # Keep only the last 3 actions in the log
+    def __log_clear(self):
+        if self.__log_col == 3:
+            self.__log.delete('1.0', END)
+            self.__log_col = 0
 
     def __send_callback(self):
         self.__text_box_receive.config(state=NORMAL)
@@ -53,6 +64,11 @@ class GUI:
         self.__text_box_receive.insert(INSERT, "ASC")
         self.__text_box_receive.config(state=DISABLED)
 
+        # Updating the log
+        self.__log_clear()
+        self.__log.insert(END, "Sent message to *topic* \n")
+        self.__log_increase()
+
     def __subscribe_button_callback(self):
         topic_subscribe = self.__entry_subscribe.get()
         self.__client.add_topic(topic_subscribe)
@@ -60,6 +76,12 @@ class GUI:
         self.__text_box_receive_subscribed.delete('1.0', END)  # Delete text box content before showing new received content
         self.__client.subscribe()
         self.__text_box_receive_subscribed.config(state=DISABLED)
+
+        # Updating the log
+        self.__log_clear()
+        # Add action to log
+        self.__log.insert(END, "Subscribed to *topic* \n")
+        self.__log_increase()
 
     """ The connect callback function """
     def __connect_button_callback(self):
@@ -70,6 +92,11 @@ class GUI:
             we dispose the tkinter objects in the root and create the next state """
             self.dispose_connect_gui()
             self.create_main_gui()
+
+            # Updating the log
+            self.__log_clear()
+            self.__log.insert(END, "Connection established \n")
+            self.__log_increase()
 
     def run(self):
         """ This method starts the tkinter event loop """
@@ -99,6 +126,10 @@ class GUI:
             we go back to the connect page"""
             self.dispose_main_gui()
             self.create_connect_gui()
+            # Updating the log
+            self.__log_clear()
+            self.__log.insert(END, "Previous session disconnected \n")
+            self.__log_increase()
 
     """ This method deletes the position of the widgets from the connect interface
     but it doesn't destroy the widgets so we can use them later if needed. """
@@ -115,6 +146,7 @@ class GUI:
         self.__button_connect.place_forget()
 
         self.__root.update()
+
 
     """ Create_main_gui method places all the widgets necessary for the main interface """
     def create_main_gui(self):
@@ -136,6 +168,7 @@ class GUI:
         # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
         self.__text_box_receive_subscribed.place(x=self.__width/5*2,y=self.__height/7*3)
+        self.__log.place(x=self.__width/5*3.5, y=self.__height/7)
 
     """ This method deletes the position of the widgets from the main interface
         but it doesn't destroy the widgets so we can use them later if needed """
@@ -156,6 +189,9 @@ class GUI:
         self.__label_send_message.place_forget()
 
         # Text boxes
+        self.__text_box_receive.delete('1.0', END)
+        self.__text_box_receive_subscribed.delete('1.0', END)
+
         self.__text_box_receive.place_forget()
         self.__text_box_send.place_forget()
         self.__text_box_receive_subscribed.place_forget()
