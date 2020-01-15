@@ -39,9 +39,9 @@ class Client:
         and the bytes received do not contain the header identifier of the packet"""
         if received_packet[3:4] == b'\x00':  # Verify the reason code; it is the 3rd byte: 0-> success
             self.__is_connected = True
-            return "Connection acknowledged"
+            return "Connect: success.\n"
         else:
-            return "Connection dropped"
+            return "Connect: failed.\n"
 
     """ Defining the disconnect action. """
     def disconnect(self):
@@ -49,18 +49,22 @@ class Client:
         packet = disconnect_packet.parse()
         self.__connection.send(packet)
         response_packet = self.__connection.receive(1024)
-        if response_packet[:] == b'\x00':
+        if response_packet[0:1] == b'\x00':
             self.__is_connected = False
-            return "Disconnect: success"
+            return "Disconnect: success.\n"
         else:
-            return "Disconnect: failed"
+            return "Disconnect: failed.\n"
 
     """ Defining the publish action. """
     def publish(self):
         publish_packet = Publish()
         packet = publish_packet.parse()
-
         self.__connection.send(packet)
+        response_packet = self.__connection.receive(1024)
+        if response_packet[0:1] == b'':
+            return "Publish: success.\n"
+        else:
+            return "Publish: failed.\n"
 
     """ Defining the subscribe action. """
     def subscribe(self):
@@ -74,8 +78,12 @@ class Client:
     def unsubscribe(self):
         unsubscribe_packet = Unsubscribe()
         packet = unsubscribe_packet.parse()
-
         self.__connection.send(packet)
+        response_packet = self.__connection.receive(1024)
+        if response_packet[0:1] == b'':
+            return "Unsubscribe: success.\n"
+        else:
+            return "Unsubscribe failed.\n"
 
     def get_is_connected(self):
         return self.__is_connected

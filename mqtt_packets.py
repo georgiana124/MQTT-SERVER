@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-
 packet_fixed_header = {
     'CONNECT': b'\x10',
     'CONNACK': b'\x20',
@@ -18,7 +17,6 @@ packet_fixed_header = {
     'DISCONNECT': b'\xE0',
     'AUTH': b'\xF0',
 }
-
 
 """ Define the Packet abstract class, the super class of each packet type to be defined.
     Connect packet actions:
@@ -169,9 +167,9 @@ class Subscribe(Packet):
         for topic in self.topic_list:
             index += 1
             aux_payload = bytearray()
-            length_topic = len(topic)
-            aux_payload += b'\x00'
-            aux_payload += bytes([length_topic])
+            length_topic = bytearray(2)
+            length_topic[1:2] = bytes([len(topic)])
+            aux_payload += length_topic
             aux_payload += topic.encode('UTF-8')
             aux_payload += bytes([index])
             payload += aux_payload
@@ -190,4 +188,5 @@ class Unsubscribe(Packet):
 
     def parse(self):
         packet = bytearray()
+
         return packet
