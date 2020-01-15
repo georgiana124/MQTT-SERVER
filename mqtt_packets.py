@@ -1,32 +1,31 @@
 from abc import ABC, abstractmethod
 
 
+packet_fixed_header = {
+    'CONNECT': b'\x10',
+    'CONNACK': b'\x20',
+    'PUBLISH': b'\x30',
+    'PUBACK': b'\x40',
+    'PUBREC': b'\x50',
+    'PUBREL': b'\x62',
+    'PUBCOMP': b'\x70',
+    'SUBSCRIBE': b'\x82',
+    'SUBACK': b'\x90',
+    'UNSUBSCRIBE': b'\xA2',
+    'UNSUBACK': b'\xB0',
+    'PINGREQ': b'\xC0',
+    'PINGRESP': b'\xD0',
+    'DISCONNECT': b'\xE0',
+    'AUTH': b'\xF0',
+}
+
+
 """ Define the Packet abstract class, the super class of each packet type to be defined.
     Connect packet actions:
     -> if the server doesn't receive a CONNECT packet within a reasonable amount of time 
     after the Network Connection is established, the Server SHOULD close the Network Connection
     -> """
 class Packet(ABC):
-
-    def __init__(self):
-
-        self.packet_fixed_header = {
-            'CONNECT': b'\x10',
-            'CONNACK': b'\x20',
-            'PUBLISH': b'\x30',
-            'PUBACK': b'\x40',
-            'PUBREC': b'\x50',
-            'PUBREL': b'\x62',
-            'PUBCOMP': b'\x70',
-            'SUBSCRIBE': b'\x82',
-            'SUBACK': b'\x90',
-            'UNSUBSCRIBE': b'\xA2',
-            'UNSUBACK': b'\xB0',
-            'PINGREQ': b'\xC0',
-            'PINGRESP': b'\xD0',
-            'DISCONNECT': b'\xE0',
-            'AUTH': b'\xF0',
-        }
 
     @abstractmethod
     def parse(self):
@@ -68,7 +67,7 @@ class Connect(Packet):
         variable_header = bytearray()  # initialize an empty byte array to create the variable header
 
         # Add fixed header
-        packet += self.packet_fixed_header['CONNECT']
+        packet += packet_fixed_header['CONNECT']
 
         # Variable header
         variable_header += b'\x00'  # Add a offset to the length field
@@ -104,7 +103,7 @@ class Disconnect(Packet):
 
     def parse(self):
         packet = bytearray()
-        packet += self.packet_fixed_header['DISCONNECT']
+        packet += packet_fixed_header['DISCONNECT']
 
         variable_header_packet = bytearray()
 
@@ -160,7 +159,7 @@ class Subscribe(Packet):
         variable_header = bytearray()
         payload = bytearray()
 
-        packet += self.packet_fixed_header['SUBSCRIBE']
+        packet += packet_fixed_header['SUBSCRIBE']
 
         variable_header += self.variable_header['packet_identifier']
         variable_header += self.variable_header['properties']

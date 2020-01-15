@@ -93,7 +93,6 @@ class GUI:
 
     def __disconnect_callback(self):
         self.__client.disconnect()
-
         if self.__client.get_is_connected() is False:
             """ If we successfully disconnect from the broker
             we go back to the connect page"""
