@@ -2,9 +2,9 @@ from tkinter import *
 from Client import *
 
 
+""" The GUI class handles the front end of the app: what does the user see.
+    It uses tkinter and contains all the graphical elements. """
 class GUI:
-    """ The GUI class handles the front end of the app: what does the user see.
-        It uses tkinter and contains all the graphical elements. """
 
     def __init__(self):
         self.__client = None
@@ -45,18 +45,20 @@ class GUI:
         self.__text_box_send = Text(self.__root, width=50, height=10)
         self.__text_box_receive_subscribed = Text(self.__root, width=50, height=10)
         self.__log = Text(self.__root, width=30, height=3)
+
         """ Create the connect interface """
         self.create_connect_gui()
 
     def __log_increase(self):
         self.__log_col += 1  # Increase column numbers in log box
 
-    # Keep only the last 3 actions in the log
+    """ Keep only the last 3 actions in the log. """
     def __log_clear(self):
         if self.__log_col == 3:
             self.__log.delete('1.0', END)
             self.__log_col = 0
 
+    """ Send button callback method. """
     def __send_callback(self):
         self.__text_box_receive.config(state=NORMAL)
         self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
@@ -99,13 +101,13 @@ class GUI:
             self.__log.insert(END, connect_message)
             self.__log_increase()
 
+    """ This method starts the tkinter event loop. """
     def run(self):
-        """ This method starts the tkinter event loop """
         self.__root.mainloop()
 
-    """ This method creates the connect interface """
+    """ This method creates the connect interface. """
     def create_connect_gui(self):
-        """ Place all the widgets on the frame to create the connect interface """
+        """ Place all the widgets on the frame to create the connect interface. """
         # Buttons
         self.__button_quit.place(bordermode=OUTSIDE, x=self.__width / 10 * 9, y=self.__height / 10 * 9)
         self.__button_connect.place(x=self.__width / 3 + 100, y=self.__height / 5 + 100)
