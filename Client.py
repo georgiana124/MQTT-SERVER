@@ -33,7 +33,7 @@ class Client:
         packet = connect_packet.parse()
 
         self.__connection.send(packet)  # Send the connect packet
-        received_packet = self.__connection.receive(2048)  # Receive the response packet
+        received_packet = self.__connection.receive(1024)  # Receive the response packet
         print(repr(received_packet))
         """The received packet is an acknowledgement packet 
         and the bytes received do not contain the header identifier of the packet"""
@@ -71,8 +71,12 @@ class Client:
         subscribe_packet = Subscribe()
         subscribe_packet.set_topics(self.__topics)
         packet = subscribe_packet.parse()
-
         self.__connection.send(packet)
+        response_packet = self.__connection.receive(1024)
+        if response_packet[0:1] == b'':
+            return "Subscribe: success.\n"
+        else:
+            return "Subscribe: failed.\n"
 
     """ Defining the unsubscribe action. """
     def unsubscribe(self):

@@ -58,6 +58,10 @@ class GUI:
             self.__log.delete('1.0', END)
             self.__log_col = 0
 
+    """ This method starts the tkinter event loop. """
+    def run(self):
+        self.__root.mainloop()
+
     """ Send button callback method. """
     def __send_callback(self):
         self.__text_box_receive.config(state=NORMAL)
@@ -88,7 +92,8 @@ class GUI:
 
     """ The connect callback function """
     def __connect_button_callback(self):
-        self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())  # Create a client object when the connect button is pressed
+        self.__client = Client("123", username=self.__entry_username.get(),
+                               password=self.__entry_password.get())  # Create a client object when the connect button is pressed
         connect_message = self.__client.connect()
         if self.__client.get_is_connected() is True:
             """ If we successfully connect to the broker
@@ -101,9 +106,18 @@ class GUI:
             self.__log.insert(END, connect_message)
             self.__log_increase()
 
-    """ This method starts the tkinter event loop. """
-    def run(self):
-        self.__root.mainloop()
+    """ Disconnect button callback method. """
+    def __disconnect_callback(self):
+        self.__client.disconnect()
+        if self.__client.get_is_connected() is False:
+            """ If we successfully disconnect from the broker
+            we go back to the connect page"""
+            self.dispose_main_gui()
+            self.create_connect_gui()
+            # Updating the log
+            self.__log_clear()
+            self.__log.insert(END, "Previous session disconnected \n")
+            self.__log_increase()
 
     """ This method creates the connect interface. """
     def create_connect_gui(self):
@@ -120,19 +134,6 @@ class GUI:
         self.__entry_username.focus_set()
         self.__entry_username.place(x=self.__width / 3 + 90, y=self.__height / 5)
         self.__entry_password.place(x=self.__width / 3 + 90, y=self.__height / 5 + 30)
-
-    """ Disconnect button callback method. """
-    def __disconnect_callback(self):
-        self.__client.disconnect()
-        if self.__client.get_is_connected() is False:
-            """ If we successfully disconnect from the broker
-            we go back to the connect page"""
-            self.dispose_main_gui()
-            self.create_connect_gui()
-            # Updating the log
-            self.__log_clear()
-            self.__log.insert(END, "Previous session disconnected \n")
-            self.__log_increase()
 
     """ This method deletes the position of the widgets from the connect interface
     but it doesn't destroy the widgets so we can use them later if needed. """
