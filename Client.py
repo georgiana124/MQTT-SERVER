@@ -38,10 +38,10 @@ class Client:
         """The received packet is an acknowledgement packet 
         and the bytes received do not contain the header identifier of the packet"""
         if received_packet[3:4] == b'\x00':  # Verify the reason code; it is the 3rd byte: 0-> success
-            print("Connection acknowledged")
+            return "Connection acknowledged"
             self.__is_connected = True
         else:
-            print("Connection dropped")
+            return "Connection dropped"
 
     """ Defining the disconnect action. """
     def disconnect(self):
@@ -50,6 +50,13 @@ class Client:
 
         self.__connection.send(packet)
         self.__is_connected = False
+
+        response_packet = self.__connection.receive(1024)
+
+        if response_packet[:] == b'\x00':
+            return "Disconnect: success"
+        else:
+            return "Disconnect: failed"
 
     """ Defining the publish action. """
     def publish(self):
