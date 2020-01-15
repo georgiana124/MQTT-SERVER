@@ -86,38 +86,41 @@ class GUI:
 
         # Updating the log
         self.__log_clear()
+
         # Add action to log
         self.__log.insert(END, subscribe_message)
         self.__log_increase()
 
     """ The connect callback function """
     def __connect_button_callback(self):
-        self.__client = Client("123", username=self.__entry_username.get(),
-                               password=self.__entry_password.get())  # Create a client object when the connect button is pressed
+        self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())  # Create a client object when the connect button is pressed
         connect_message = self.__client.connect()
+
+        # Updating the log
+        self.__log_clear()
+        self.__log.insert(END, connect_message)
+        self.__log_increase()
+
         if self.__client.get_is_connected() is True:
             """ If we successfully connect to the broker
             we dispose the tkinter objects in the root and create the next state """
             self.dispose_connect_gui()
             self.create_main_gui()
 
-            # Updating the log
-            self.__log_clear()
-            self.__log.insert(END, connect_message)
-            self.__log_increase()
-
     """ Disconnect button callback method. """
     def __disconnect_callback(self):
-        self.__client.disconnect()
+        disconnect_message = self.__client.disconnect()
+
+        # Updating the log
+        self.__log_clear()
+        self.__log.insert(END, disconnect_message)
+        self.__log_increase()
+
         if self.__client.get_is_connected() is False:
             """ If we successfully disconnect from the broker
             we go back to the connect page"""
             self.dispose_main_gui()
             self.create_connect_gui()
-            # Updating the log
-            self.__log_clear()
-            self.__log.insert(END, "Previous session disconnected \n")
-            self.__log_increase()
 
     """ This method creates the connect interface. """
     def create_connect_gui(self):
