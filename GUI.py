@@ -12,6 +12,7 @@ class GUI:
         self.__width = 1400
         self.__height = 800
         self.__log_col = 0
+        self.__packet_struct = packet_struct(message='', byte_packet=bytearray())
 
         """ Create a root app based on the width and height defined """
         self.__root.geometry(str(self.__width) + "x" + str(self.__height))
@@ -58,10 +59,10 @@ class GUI:
             self.__log.delete('1.0', END)
             self.__log_col = 0
 
-    def __log_update(self, message):
+    def __log_update(self, _packet_struct):
         # Updating the log
         self.__log_clear()
-        self.__log.insert(END, message)
+        self.__log.insert(END, _packet_struct.message + " byte code: " + repr(_packet_struct.byte_packet))
         self.__log_increase()
 
     """ This method starts the tkinter event loop. """
@@ -72,11 +73,11 @@ class GUI:
     def __send_callback(self):
         self.__text_box_receive.config(state=NORMAL)
         self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
-        publish_message = self.__client.publish()  # Get the response from the server
+        self.__packet_struct = self.__client.publish()  # Get the response from the server
         self.__text_box_receive.insert(INSERT, "ASC")
         self.__text_box_receive.config(state=DISABLED)
 
-        self.__log_update(publish_message)
+        self.__log_update(self.__packet_struct)
 
     """ Subscribe button callback method. """
     def __subscribe_button_callback(self):
@@ -84,17 +85,17 @@ class GUI:
         self.__client.add_topic(topic_subscribe)
         self.__text_box_receive_subscribed.config(state=NORMAL)
         self.__text_box_receive_subscribed.delete('1.0', END)  # Delete text box content before showing new received content
-        subscribe_message = self.__client.subscribe()  # Get the response from the server
+        self.__packet_struct = self.__client.subscribe()  # Get the response from the server
         self.__text_box_receive_subscribed.config(state=DISABLED)
 
-        self.__log_update(subscribe_message)
+        self.__log_update(self.__packet_struct)
 
     """ The connect callback function """
     def __connect_button_callback(self):
         self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())  # Create a client object when the connect button is pressed
-        connect_message = self.__client.connect()  # Get the response from the server
+        self.__packet_struct = self.__client.connect()  # Get the response from the server
 
-        self.__log_update(connect_message)
+        self.__log_update(self.__packet_struct)
 
         if self.__client.get_is_connected() is True:
             """ If we successfully connect to the broker
@@ -104,9 +105,9 @@ class GUI:
 
     """ Disconnect button callback method. """
     def __disconnect_callback(self):
-        disconnect_message = self.__client.disconnect()  # Get the response from the server
+        self.__packet_struct = self.__client.disconnect()  # Get the response from the server
 
-        self.__log_update(disconnect_message)
+        self.__log_update(self.__packet_struct)
 
         if self.__client.get_is_connected() is False:
             """ If we successfully disconnect from the broker
