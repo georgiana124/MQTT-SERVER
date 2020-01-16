@@ -42,7 +42,7 @@ class GUI:
         self.__entry_subscribe = Entry(self.__root)
 
         """ Create the gui buttons """
-        self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
+        self.__button_quit = Button(self.__root, text="Quit", command=self.__quit_button_callback())
         self.__button_send = Button(self.__root, text="Send", command=self.__send_button_callback)
         self.__button_disconnect = Button(self.__root, text="Disconnect", command=self.__disconnect_button_callback)
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=self.__connect_button_callback)
@@ -60,6 +60,10 @@ class GUI:
 
         """ Create the connect interface """
         self.create_connect_gui()
+
+    def __quit_button_callback(self):
+        self.__disconnect_button_callback()
+        self.__root.quit()
 
     def __text_box_log_increase(self):
         self.__text_box_log_col += 1  # Increase column numbers in log box
