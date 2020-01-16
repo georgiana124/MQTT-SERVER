@@ -26,6 +26,7 @@ class GUI:
         self.__label_send_message = Label(self.__root, text='Send Message')
         self.__label_topic = Label(self.__root, text='Topic')
         self.__label_subscribe_to = Label(self.__root, text='Subscribe to')
+        self.__label_qos = Label(self.__root, text='QoS')
 
         """ Create the gui entries """
         self.__entry_username = Entry(self.__root)
@@ -36,10 +37,11 @@ class GUI:
 
         """ Create the gui buttons """
         self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
-        self.__button_send = Button(self.__root, text="Send", command=self.__send_callback)
+        self.__button_send = Button(self.__root, text="Send", command=self.__send_button_callback)
         self.__button_disconnect = Button(self.__root, text="Disconnect", command=self.__disconnect_callback)
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=self.__connect_button_callback)
         self.__button_subscribe = Button(self.__root, text="Subscribe", width=10, command=self.__subscribe_button_callback)
+        self.__button_unsubscribe = Button(self.__root, text="Unsubscribe", width=10, command=self.__unsubscribe_button_callback)
 
         """ Create the gui text box """
         self.__text_box_receive = Text(self.__root, width=50, height=10)
@@ -73,8 +75,14 @@ class GUI:
     def run(self):
         self.__root.mainloop()
 
+    """ Unsubscribe button callback method. """
+    def __unsubscribe_button_callback(self):
+        struct_received = self.__client.unsubscribe()
+
+        self.__log_update(struct_received)
+
     """ Send button callback method. """
-    def __send_callback(self):
+    def __send_button_callback(self):
         self.__text_box_receive.config(state=NORMAL)
         self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
         struct_received = self.__client.publish()  # Get the response from the server
@@ -132,6 +140,7 @@ class GUI:
         # Labels
         self.__label_username.place(x=self.__width / 3, y=self.__height / 5)
         self.__label_password.place(x=self.__width / 3, y=self.__height / 5 + 30)
+        self.__label_qos.place(x=self.__width/3+270, y=self.__height/5)
 
         # Entries
         self.__entry_username.focus_set()
@@ -147,6 +156,7 @@ class GUI:
         # Labels
         self.__label_username.place_forget()
         self.__label_password.place_forget()
+        self.__label_qos.place_forget()
 
         # Entries
         self.__entry_password.place_forget()
@@ -171,6 +181,7 @@ class GUI:
         self.__button_send.place(bordermode=OUTSIDE, x=self.__width/8+45, y=self.__height/7+60)
         self.__button_subscribe.place(border=OUTSIDE, x=self.__width/8+30, y=self.__height*3/7+30)
         self.__button_disconnect.place(bordermode=OUTSIDE, x=self.__width / 10 * 9, y=self.__height / 10 * 8.5)
+        self.__button_unsubscribe.place(bordermode=OUTSIDE, x=self.__width/8+30, y=self.__height*3/7+60)
 
         # Labels
         self.__label_topic.place(x=self.__width/8-60, y=self.__height/7)
@@ -194,6 +205,7 @@ class GUI:
         self.__button_send.place_forget()
         self.__button_subscribe.place_forget()
         self.__button_disconnect.place_forget()
+        self.__button_unsubscribe.place_forget()
 
         # Labels
         self.__label_topic.place_forget()

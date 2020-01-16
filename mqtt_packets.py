@@ -129,6 +129,9 @@ class Publish(Packet):
 
     def parse(self):
         packet = bytearray()
+
+        packet += packet_fixed_header['PUBLISH']
+
         return packet
 
     def set_qos(self, _qos):
@@ -193,5 +196,7 @@ class Unsubscribe(Packet):
 
     def parse(self):
         packet = bytearray()
+
+        packet += packet_fixed_header['UNSUBSCRIBE']
 
         return packet
