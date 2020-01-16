@@ -62,7 +62,7 @@ class Client:
         self.__connection.send(packet)
         self.__struct.byte_code = self.__connection.receive(1024)
         assert self.__struct.byte_code[0:1] == packet_fixed_header['PUBACK']
-        if self.__struct.byte_code[0:1] == b'':
+        if self.__struct.byte_code[-2:-1] == b'':
             self.__struct.message = "Publish: success."
             return self.__struct
         else:
@@ -91,7 +91,7 @@ class Client:
         self.__connection.send(packet)
         self.__struct.byte_code = self.__connection.receive(1024)
         assert self.__struct.byte_code[0:1] == packet_fixed_header['UNSUBACK']
-        if self.__struct.byte_code[0:1] == b'':
+        if self.__struct.byte_code[-1:0] == b'\x00':
             self.__struct.message = "Unsubscribe: success.\n"
             return self.__struct
         else:
