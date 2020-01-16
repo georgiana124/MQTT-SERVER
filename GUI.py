@@ -1,7 +1,6 @@
 from tkinter import *
 from Client import *
 
-
 """ The GUI class handles the front end of the app: what does the user see.
     It uses tkinter and contains all the graphical elements. """
 class GUI:
@@ -12,7 +11,6 @@ class GUI:
         self.__width = 1400
         self.__height = 800
         self.__log_col = 0
-        self.__packet_struct = packet_struct(message='', byte_packet=bytearray())
 
         """ Create a root app based on the width and height defined """
         self.__root.geometry(str(self.__width) + "x" + str(self.__height))
@@ -45,7 +43,7 @@ class GUI:
         self.__text_box_receive = Text(self.__root, width=50, height=10)
         self.__text_box_send = Text(self.__root, width=50, height=10)
         self.__text_box_receive_subscribed = Text(self.__root, width=50, height=10)
-        self.__log = Text(self.__root, width=30, height=3)
+        self.__log = Text(self.__root, width=30, height=30)
 
         """ Create the connect interface """
         self.create_connect_gui()
@@ -62,7 +60,7 @@ class GUI:
     def __log_update(self, _packet_struct):
         # Updating the log
         self.__log_clear()
-        self.__log.insert(END, _packet_struct.message + " byte code: " + repr(_packet_struct.byte_packet))
+        self.__log.insert(END, _packet_struct.message + " byte code: " + repr(_packet_struct.byte_code) + "\n")
         self.__log_increase()
 
     """ This method starts the tkinter event loop. """
@@ -73,11 +71,11 @@ class GUI:
     def __send_callback(self):
         self.__text_box_receive.config(state=NORMAL)
         self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
-        self.__packet_struct = self.__client.publish()  # Get the response from the server
+        struct_received = self.__client.publish()  # Get the response from the server
         self.__text_box_receive.insert(INSERT, "ASC")
         self.__text_box_receive.config(state=DISABLED)
 
-        self.__log_update(self.__packet_struct)
+        self.__log_update(struct_received)
 
     """ Subscribe button callback method. """
     def __subscribe_button_callback(self):
@@ -85,17 +83,17 @@ class GUI:
         self.__client.add_topic(topic_subscribe)
         self.__text_box_receive_subscribed.config(state=NORMAL)
         self.__text_box_receive_subscribed.delete('1.0', END)  # Delete text box content before showing new received content
-        self.__packet_struct = self.__client.subscribe()  # Get the response from the server
+        struct_received = self.__client.subscribe()  # Get the response from the server
         self.__text_box_receive_subscribed.config(state=DISABLED)
 
-        self.__log_update(self.__packet_struct)
+        self.__log_update(struct_received)
 
     """ The connect callback function """
     def __connect_button_callback(self):
         self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())  # Create a client object when the connect button is pressed
-        self.__packet_struct = self.__client.connect()  # Get the response from the server
+        struct_received = self.__client.connect()  # Get the response from the server
 
-        self.__log_update(self.__packet_struct)
+        self.__log_update(struct_received)
 
         if self.__client.get_is_connected() is True:
             """ If we successfully connect to the broker
@@ -105,9 +103,9 @@ class GUI:
 
     """ Disconnect button callback method. """
     def __disconnect_callback(self):
-        self.__packet_struct = self.__client.disconnect()  # Get the response from the server
+        struct_received = self.__client.disconnect()  # Get the response from the server
 
-        self.__log_update(self.__packet_struct)
+        self.__log_update(struct_received)
 
         if self.__client.get_is_connected() is False:
             """ If we successfully disconnect from the broker
