@@ -27,9 +27,3 @@ class Ping_Thread:
     def stop(self):
         self.timer.cancel()
         self.is_running = False
-
-
-class Send_Thread(Thread):
-
-    def __init__(self, _target, _args):
-        Thread.__init__(self, target=_target, args=_args)
