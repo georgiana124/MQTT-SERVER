@@ -12,7 +12,7 @@ class GUI:
         self.__root = Tk()  # Create the main root for the app
         self.__width = 1400
         self.__height = 800
-        self.__log_col = 0
+        self.__text_box_log_col = 0
 
         """ Create a root app based on the width and height defined """
         self.__root.geometry(str(self.__width) + "x" + str(self.__height))
@@ -23,7 +23,8 @@ class GUI:
         self.__label_username = Label(self.__root, text='Username')
         self.__label_password = Label(self.__root, text='Password')
         self.__label_receive_message = Label(self.__root, text='Received message')
-        self.__label_send_message = Label(self.__root, text='Send Message')
+        self.__label_send_message = Label(self.__root, text='Sent Message')
+        self.__label_publish_message = Label(self.__root, text='Message')
         self.__label_topic = Label(self.__root, text='Topic')
         self.__label_subscribe_to = Label(self.__root, text='Subscribe to')
         self.__label_qos = Label(self.__root, text='QoS')
@@ -46,30 +47,30 @@ class GUI:
         """ Create the gui text box """
         self.__text_box_receive = Text(self.__root, width=50, height=10)
         self.__text_box_send = Text(self.__root, width=50, height=10)
-        self.__text_box_receive_subscribed = Text(self.__root, width=50, height=10)
-        self.__log = Text(self.__root, width=50, height=30)
+        self.__text_box_log = Text(self.__root, width=50, height=30)
 
         """ Create qos combo box. """
         self.__qos_combo_box = Combobox(self.__root, values=['0', '1', '2'], width=5)
+        self.__qos_combo_box.current(0)
 
         """ Create the connect interface """
         self.create_connect_gui()
 
-    def __log_increase(self):
-        self.__log_col += 1  # Increase column numbers in log box
+    def __text_box_log_increase(self):
+        self.__text_box_log_col += 1  # Increase column numbers in log box
 
     """ Keep only the last 5 actions in the log. """
-    def __log_clear(self):
-        if self.__log_col == 5:
-            self.__log.delete('1.0', END)
-            self.__log_col = 0
+    def __text_box_log_clear(self):
+        if self.__text_box_log_col == 5:
+            self.__text_box_log.delete('1.0', END)
+            self.__text_box_log_col = 0
 
     """ Add a new entry to the log. """
-    def __log_update(self, _packet_struct):
+    def __text_box_log_update(self, _packet_struct):
         """Updating the log"""
-        self.__log_clear()
-        self.__log.insert(END, _packet_struct.message + "\nPacket:" + repr(binascii.hexlify(_packet_struct.byte_code)) + "\n\n")
-        self.__log_increase()
+        self.__text_box_log_clear()
+        self.__text_box_log.insert(END, _packet_struct.message + "\nPacket:" + repr(binascii.hexlify(_packet_struct.byte_code)) + "\n\n")
+        self.__text_box_log_increase()
 
     """ This method starts the tkinter event loop. """
     def run(self):
@@ -79,7 +80,7 @@ class GUI:
     def __unsubscribe_button_callback(self):
         struct_received = self.__client.unsubscribe()
 
-        self.__log_update(struct_received)
+        self.__text_box_log_update(struct_received)
 
     """ Send button callback method. """
     def __send_button_callback(self):
@@ -89,25 +90,25 @@ class GUI:
         self.__text_box_receive.insert(INSERT, "ASC")
         self.__text_box_receive.config(state=DISABLED)
 
-        self.__log_update(struct_received)
+        self.__text_box_log_update(struct_received)
 
     """ Subscribe button callback method. """
     def __subscribe_button_callback(self):
         topic_subscribe = self.__entry_subscribe.get()
         self.__client.add_topic(topic_subscribe)
-        self.__text_box_receive_subscribed.config(state=NORMAL)
-        self.__text_box_receive_subscribed.delete('1.0', END)  # Delete text box content before showing new received content
+        self.__text_box_send.config(state=NORMAL)
+        self.__text_box_send.delete('1.0', END)  # Delete text box content before showing new received content
         struct_received = self.__client.subscribe()  # Get the response from the server
-        self.__text_box_receive_subscribed.config(state=DISABLED)
+        self.__text_box_send.config(state=DISABLED)
 
-        self.__log_update(struct_received)
+        self.__text_box_log_update(struct_received)
 
     """ The connect callback function """
     def __connect_button_callback(self):
         self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get(), qos=int(self.__qos_combo_box.get()))  # Create a client object when the connect button is pressed
         struct_received = self.__client.connect()  # Get the response from the server
 
-        self.__log_update(struct_received)
+        self.__text_box_log_update(struct_received)
 
         if self.__client.get_is_connected() is True:
             """ If we successfully connect to the broker
@@ -123,7 +124,7 @@ class GUI:
         struct.message = "Disconnect: success"
 
         struct.byte_code = b''
-        self.__log_update(struct)
+        self.__text_box_log_update(struct)
         if self.__client.get_is_connected() is False:
             """ If we successfully disconnect from the broker
             we go back to the connect page"""
@@ -187,11 +188,14 @@ class GUI:
         self.__label_topic.place(x=self.__width/8-60, y=self.__height/7)
         self.__label_send_message.place(x=self.__width/8-110, y=self.__height/7+30)
         self.__label_subscribe_to.place(x=self.__width/8-100, y=self.__height*3/7)
+        self.__label_send_message.place(x=self.__width/5*2, y=self.__height/7*3-30)
+        self.__label_receive_message.place(x=self.__width/5*2, y=self.__height/7-30)
+        self.__label_publish_message.place(x=self.__width/8-60, y=self.__height/7+30)
 
         # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
-        self.__text_box_receive_subscribed.place(x=self.__width/5*2, y=self.__height/7*3)
-        self.__log.place(x=self.__width/5*3.5, y=self.__height/7)
+        self.__text_box_send.place(x=self.__width/5*2, y=self.__height/7*3)
+        self.__text_box_log.place(x=self.__width/5*3.5, y=self.__height/7)
 
     """ This method deletes the position of the widgets from the main interface
         but it doesn't destroy the widgets so we can use them later if needed """
@@ -211,12 +215,13 @@ class GUI:
         self.__label_topic.place_forget()
         self.__label_subscribe_to.place_forget()
         self.__label_send_message.place_forget()
+        self.__label_receive_message.place_forget()
+        self.__label_publish_message.place_forget()
 
         # Text boxes
         self.__text_box_receive.delete('1.0', END)
-        self.__text_box_receive_subscribed.delete('1.0', END)
+        self.__text_box_send.delete('1.0', END)
         self.__text_box_receive.place_forget()
         self.__text_box_send.place_forget()
-        self.__text_box_receive_subscribed.place_forget()
 
         self.__root.update()
