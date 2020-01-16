@@ -84,8 +84,10 @@ class GUI:
 
     """ Unsubscribe button callback method. """
     def __unsubscribe_button_callback(self):
+        """ Create and start a thread for unsubscribe action. """
         self.__send_thread = Thread(target=self.__client.unsubscribe)
         self.__send_thread.run()
+
         struct_received = result.get()
         self.__text_box_log_update(struct_received)
 
@@ -93,8 +95,11 @@ class GUI:
     def __send_button_callback(self):
         self.__text_box_receive.config(state=NORMAL)
         self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
+
+        """ Create and start a thread for publish action. """
         self.__send_thread = Thread(target=self.__client.publish)
         self.__send_thread.run()
+
         struct_received = result.get()  # Get the response from the server
         self.__text_box_receive.insert(INSERT, "ASC")
         self.__text_box_receive.config(state=DISABLED)
@@ -107,8 +112,11 @@ class GUI:
         self.__client.add_topic(topic_subscribe)
         self.__text_box_send.config(state=NORMAL)
         self.__text_box_send.delete('1.0', END)  # Delete text box content before showing new received content
+
+        """ Create and start a thread for subscribing action. """
         self.__send_thread = Thread(target=self.__client.subscribe)
         self.__send_thread.run()
+
         struct_received = result.get()  # Get the response from the server
         self.__text_box_send.config(state=DISABLED)
 
@@ -118,6 +126,7 @@ class GUI:
     def __connect_button_callback(self):
         self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get(), qos=int(self.__qos_combo_box.get()))  # Create a client object when the connect button is pressed
 
+        """ Create and start a thread for connect action. """
         self.__send_thread = Thread(target=self.__client.connect)
         self.__send_thread.run()
 
@@ -134,6 +143,7 @@ class GUI:
 
     """ Disconnect button callback method. """
     def __disconnect_button_callback(self):
+        """ Create and start a thread for disconnect action. """
         self.__send_thread = Thread(target=self.__client.disconnect)
         self.__send_thread.run()
         struct = packet_struct()
