@@ -30,9 +30,11 @@ class GUI:
         self.__label_send_message = Label(self.__root, text='Sent Message')
         self.__label_publish_message = Label(self.__root, text='Message')
         self.__label_topic = Label(self.__root, text='Topic')
-        self.__label_subscribe_to = Label(self.__root, text='Subscribe to')
+        self.__label_subscribe_to = Label(self.__root, text='Topic')
         self.__label_qos = Label(self.__root, text='QoS')
         self.__label_logger = Label(self.__root, text='Logger')
+        self.__label_send = Label(self.__root, text ="Send Messages")
+        self.__label_manage = Label(self.__root, text="Manage Subscriptions")
 
         """ Create the gui entries """
         self.__entry_username = Entry(self.__root)
@@ -51,7 +53,9 @@ class GUI:
 
         """ Create the gui text box """
         self.__text_box_receive = Text(self.__root, width=50, height=10)
+        self.__text_box_receive.config(state=DISABLED)
         self.__text_box_send = Text(self.__root, width=50, height=10)
+        self.__text_box_send.config(state=DISABLED)
         self.__text_box_log = Text(self.__root, width=50, height=30, bg='black', fg='SpringGreen2')
 
         """ Create qos combo box. """
@@ -213,9 +217,9 @@ class GUI:
 
         # Buttons
         self.__button_send.place(bordermode=OUTSIDE, x=self.__width/8+45, y=self.__height/7+60)
-        self.__button_subscribe.place(border=OUTSIDE, x=self.__width/8+30, y=self.__height*3/7+30)
+        self.__button_subscribe.place(border=OUTSIDE, x=self.__width/9+10, y=self.__height*3/7+40)
         self.__button_disconnect.place(bordermode=OUTSIDE, x=self.__width / 10 * 9, y=self.__height / 10 * 8.5)
-        self.__button_unsubscribe.place(bordermode=OUTSIDE, x=self.__width/8+30, y=self.__height*3/7+60)
+        self.__button_unsubscribe.place(bordermode=OUTSIDE, x=self.__width/5+10, y=self.__height*3/7+40)
 
         # Labels
         self.__label_topic.place(x=self.__width/8-60, y=self.__height/7)
@@ -224,6 +228,8 @@ class GUI:
         self.__label_send_message.place(x=self.__width/5*2, y=self.__height/7*3-30)
         self.__label_receive_message.place(x=self.__width/5*2, y=self.__height/7-30)
         self.__label_publish_message.place(x=self.__width/8-60, y=self.__height/7+30)
+        self.__label_manage.place(x=self.__width/8,y=self.__height*3/8)
+        self.__label_send.place(x=self.__width/8, y=self.__height/10)
 
         # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
@@ -251,6 +257,8 @@ class GUI:
         self.__label_send_message.place_forget()
         self.__label_receive_message.place_forget()
         self.__label_publish_message.place_forget()
+        self.__label_manage.place_forget()
+        self.__label_send.place_forget()
 
         # Text boxes
         self.__text_box_receive.delete('1.0', END)
