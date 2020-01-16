@@ -28,6 +28,7 @@ class GUI:
         self.__label_topic = Label(self.__root, text='Topic')
         self.__label_subscribe_to = Label(self.__root, text='Subscribe to')
         self.__label_qos = Label(self.__root, text='QoS')
+        self.__label_logger = Label(self.__root, text='Logger')
 
         """ Create the gui entries """
         self.__entry_username = Entry(self.__root)
@@ -47,7 +48,7 @@ class GUI:
         """ Create the gui text box """
         self.__text_box_receive = Text(self.__root, width=50, height=10)
         self.__text_box_send = Text(self.__root, width=50, height=10)
-        self.__text_box_log = Text(self.__root, width=50, height=30)
+        self.__text_box_log = Text(self.__root, width=50, height=30, bg='black', fg='SpringGreen2')
 
         """ Create qos combo box. """
         self.__qos_combo_box = Combobox(self.__root, values=['0', '1', '2'], width=5)
@@ -142,14 +143,20 @@ class GUI:
         self.__label_username.place(x=self.__width / 3, y=self.__height / 5)
         self.__label_password.place(x=self.__width / 3, y=self.__height / 5 + 30)
         self.__label_qos.place(x=self.__width/3+270, y=self.__height/5)
+        self.__label_logger.place(x=self.__width/5*3.5, y=self.__height/7-30)
 
         # Entries
         self.__entry_username.focus_set()
         self.__entry_username.place(x=self.__width / 3 + 90, y=self.__height / 5)
         self.__entry_password.place(x=self.__width / 3 + 90, y=self.__height / 5 + 30)
 
+        # Text box
+        self.__text_box_log.place(x=self.__width/5*3.5, y=self.__height/7)
+
         # Combo box
         self.__qos_combo_box.place(x=self.__width / 3 + 300, y=self.__height / 5)
+
+        self.__root.update()
 
     """ This method deletes the position of the widgets from the connect interface
     but it doesn't destroy the widgets so we can use them later if needed. """
@@ -195,7 +202,8 @@ class GUI:
         # Text boxes
         self.__text_box_receive.place(x=self.__width/5*2, y=self.__height/7)
         self.__text_box_send.place(x=self.__width/5*2, y=self.__height/7*3)
-        self.__text_box_log.place(x=self.__width/5*3.5, y=self.__height/7)
+
+        self.__root.update()
 
     """ This method deletes the position of the widgets from the main interface
         but it doesn't destroy the widgets so we can use them later if needed """
