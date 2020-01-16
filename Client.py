@@ -37,7 +37,6 @@ class Client:
 
         self.__connection.send(packet)  # Send the connect packet
         self.__struct.byte_code = self.__connection.receive(1024)  # Receive the response packet
-        print(repr(self.__struct.byte_code))
         """The received packet is an acknowledgement packet 
         and the bytes received do not contain the header identifier of the packet"""
         if self.__struct.byte_code[3:4] == b'\x00':  # Verify the reason code; it is the 3rd byte: 0-> success
@@ -53,14 +52,8 @@ class Client:
         disconnect_packet = Disconnect()
         packet = disconnect_packet.parse()
         self.__connection.send(packet)
-        self.__struct.byte_code = self.__connection.receive(1024)
-        if self.__struct.byte_code[0:1] == b'\x00':
-            self.__is_connected = False
-            self.__struct.message = "Disconnect: success."
-            return self.__struct
-        else:
-            self.__struct.message = "Disconnect: failed."
-            return self.__struct
+        self.__connection.close()
+        self.__is_connected = False
 
     """ Defining the publish action. """
     def publish(self):

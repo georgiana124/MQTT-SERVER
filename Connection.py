@@ -21,10 +21,14 @@ class Connection:
     def set_host_ip(self, _ip):
         self.__host_ip = _ip
 
-    """Send a packets(byte array) with the socket created"""
+    """ Send a packets(byte array) with the socket created. """
     def send(self, packet):
         self.__socket.sendall(packet)
 
-    """Receive a packets(byte array) with the socket created"""
+    """ Close the socket when done. """
+    def close(self):
+        self.__socket.close()
+
+    """ Receive a packets(byte array) with the socket created. """
     def receive(self, byte_size):
         return self.__socket.recv(byte_size)

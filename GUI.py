@@ -43,7 +43,7 @@ class GUI:
         self.__text_box_receive = Text(self.__root, width=50, height=10)
         self.__text_box_send = Text(self.__root, width=50, height=10)
         self.__text_box_receive_subscribed = Text(self.__root, width=50, height=10)
-        self.__log = Text(self.__root, width=30, height=30)
+        self.__log = Text(self.__root, width=50, height=30)
 
         """ Create the connect interface """
         self.create_connect_gui()
@@ -60,7 +60,7 @@ class GUI:
     def __log_update(self, _packet_struct):
         # Updating the log
         self.__log_clear()
-        self.__log.insert(END, _packet_struct.message + " byte code: " + repr(_packet_struct.byte_code) + "\n")
+        self.__log.insert(END, _packet_struct.message + "\nPacket:" + repr(_packet_struct.byte_code) + "\n\n")
         self.__log_increase()
 
     """ This method starts the tkinter event loop. """
@@ -103,10 +103,13 @@ class GUI:
 
     """ Disconnect button callback method. """
     def __disconnect_callback(self):
-        struct_received = self.__client.disconnect()  # Get the response from the server
+        self.__client.disconnect()  # Get the response from the server
 
-        self.__log_update(struct_received)
+        struct = packet_struct()
+        struct.message = "Disconnect: success"
 
+        struct.byte_code = b''
+        self.__log_update(struct)
         if self.__client.get_is_connected() is False:
             """ If we successfully disconnect from the broker
             we go back to the connect page"""
