@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter.ttk import Combobox
 from Client import *
 import binascii
 
@@ -46,6 +47,9 @@ class GUI:
         self.__text_box_receive_subscribed = Text(self.__root, width=50, height=10)
         self.__log = Text(self.__root, width=50, height=30)
 
+        """ Create qos combo box. """
+        self.__qos_combo_box = Combobox(self.__root, values=['0', '1', '2'], width=5)
+
         """ Create the connect interface """
         self.create_connect_gui()
 
@@ -60,7 +64,7 @@ class GUI:
 
     """ Add a new entry to the log. """
     def __log_update(self, _packet_struct):
-        # Updating the log
+        """Updating the log"""
         self.__log_clear()
         self.__log.insert(END, _packet_struct.message + "\nPacket:" + repr(binascii.hexlify(_packet_struct.byte_code)) + "\n\n")
         self.__log_increase()
@@ -92,7 +96,7 @@ class GUI:
 
     """ The connect callback function """
     def __connect_button_callback(self):
-        self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get())  # Create a client object when the connect button is pressed
+        self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get(), qos=int(self.__qos_combo_box.get()))  # Create a client object when the connect button is pressed
         struct_received = self.__client.connect()  # Get the response from the server
 
         self.__log_update(struct_received)
@@ -134,6 +138,9 @@ class GUI:
         self.__entry_username.place(x=self.__width / 3 + 90, y=self.__height / 5)
         self.__entry_password.place(x=self.__width / 3 + 90, y=self.__height / 5 + 30)
 
+        # Combo box
+        self.__qos_combo_box.place(x=self.__width / 3 + 300, y=self.__height / 5)
+
     """ This method deletes the position of the widgets from the connect interface
     but it doesn't destroy the widgets so we can use them later if needed. """
     def dispose_connect_gui(self):
@@ -147,6 +154,9 @@ class GUI:
 
         # Buttons
         self.__button_connect.place_forget()
+
+        # Combo box
+        self.__qos_combo_box.place_forget()
 
         self.__root.update()
 

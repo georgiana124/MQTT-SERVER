@@ -12,7 +12,7 @@ from mqtt_packets import *
 """ The Client class defines the behaviour of the user. """
 class Client:
 
-    def __init__(self, client_id, username=None, password=None, host_ip=None):
+    def __init__(self, client_id, username=None, password=None, host_ip=None, qos=0):
         self.__username = username
         self.__client_id = client_id
         self.__password = password
@@ -22,6 +22,7 @@ class Client:
         self.__thread = None
         self.__is_connected = False
         self.__struct = packet_struct()
+        self.__qos = qos
 
     """ Defining the connect action. """
     def connect(self):
@@ -32,7 +33,7 @@ class Client:
         connect_packet = Connect()
         connect_packet.set_username(self.__username)
         connect_packet.set_password(self.__password)
-
+        connect_packet.set_qos(self.__qos)
         packet = connect_packet.parse()
 
         self.__connection.send(packet)  # Send the connect packet
@@ -59,16 +60,22 @@ class Client:
     """ Defining the publish action. """
     def publish(self):
         publish_packet = Publish()
-        packet = publish_packet.parse()
-        self.__connection.send(packet)
-        self.__struct.byte_code = self.__connection.receive(1024)
-        assert self.__struct.byte_code[0:1] == packet_fixed_header['PUBACK']
-        if self.__struct.byte_code[-2:-1] == b'':
-            self.__struct.message = "Publish: success."
-            return self.__struct
-        else:
-            self.__struct.message = "Publish: failed."
-            return self.__struct
+        publish_packet.set_qos(self.__qos)
+        if self.__qos == 0:
+            packet = publish_packet.parse()
+            self.__connection.send(packet)
+            self.__struct.byte_code = self.__connection.receive(1024)
+            assert self.__struct.byte_code[0:1] == packet_fixed_header['PUBACK']
+            if self.__struct.byte_code[-2:-1] == b'':
+                self.__struct.message = "Publish: success."
+                return self.__struct
+            else:
+                self.__struct.message = "Publish: failed."
+                return self.__struct
+        if self.__qos == 1:
+            return None
+        if self.__qos == 2:
+            return None
 
     """ Defining the subscribe action. """
     def subscribe(self):

@@ -119,6 +119,8 @@ class Disconnect(Packet):
 """ Implement Publish class. This class creates a publish packet based on some options. """
 class Publish(Packet):
 
+    qos = 0
+
     variable_header = {
         'topic_name': bytearray(),  # string utf8 encoded
         'packet_identifier': '\x00\x0a',
@@ -128,6 +130,9 @@ class Publish(Packet):
     def parse(self):
         packet = bytearray()
         return packet
+
+    def set_qos(self, _qos):
+        self.qos = _qos
 
 
 """ Implement Subscribe class. This class creates the subscribe packet to be sent into the socket. 
