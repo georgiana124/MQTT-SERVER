@@ -37,6 +37,7 @@ class Client:
 
         self.__connection.send(packet)  # Send the connect packet
         self.__struct.byte_code = self.__connection.receive(1024)  # Receive the response packet
+        assert self.__struct.byte_code[0:1] == packet_fixed_header['CONNACK']
         """The received packet is an acknowledgement packet 
         and the bytes received do not contain the header identifier of the packet"""
         if self.__struct.byte_code[3:4] == b'\x00':  # Verify the reason code; it is the 3rd byte: 0-> success

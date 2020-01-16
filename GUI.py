@@ -1,5 +1,6 @@
 from tkinter import *
 from Client import *
+import binascii
 
 """ The GUI class handles the front end of the app: what does the user see.
     It uses tkinter and contains all the graphical elements. """
@@ -51,16 +52,17 @@ class GUI:
     def __log_increase(self):
         self.__log_col += 1  # Increase column numbers in log box
 
-    """ Keep only the last 3 actions in the log. """
+    """ Keep only the last 5 actions in the log. """
     def __log_clear(self):
-        if self.__log_col == 3:
+        if self.__log_col == 5:
             self.__log.delete('1.0', END)
             self.__log_col = 0
 
+    """ Add a new entry to the log. """
     def __log_update(self, _packet_struct):
         # Updating the log
         self.__log_clear()
-        self.__log.insert(END, _packet_struct.message + "\nPacket:" + repr(_packet_struct.byte_code) + "\n\n")
+        self.__log.insert(END, _packet_struct.message + "\nPacket:" + repr(binascii.hexlify(_packet_struct.byte_code)) + "\n\n")
         self.__log_increase()
 
     """ This method starts the tkinter event loop. """
