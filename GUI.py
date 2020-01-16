@@ -22,6 +22,7 @@ class GUI:
         self.__root.geometry(str(self.__width) + "x" + str(self.__height))
         self.__root.title("MQTT Client")
         self.__root.configure(background='PeachPuff2')
+        self.__root.protocol("WM_DELETE_WINDOW", self.__quit_button_callback)
 
         """ Create the gui labels """
         self.__label_username = Label(self.__root, text='Username')
@@ -66,7 +67,9 @@ class GUI:
         self.create_connect_gui()
 
     def __quit_button_callback(self):
-        self.__disconnect_button_callback()
+        if self.__client is not None:
+            if self.__client.get_is_connected() is True:
+                self.__disconnect_button_callback()
         self.__root.quit()
 
     def __text_box_log_increase(self):
