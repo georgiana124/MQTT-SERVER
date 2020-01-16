@@ -7,6 +7,9 @@ port 1883
 import Connection as conn
 from packet_struct import *
 from mqtt_packets import *
+import queue
+
+result = queue.Queue()
 
 
 """ The Client class defines the behaviour of the user. """
@@ -19,7 +22,6 @@ class Client:
         self.__host_ip = host_ip
         self.__topics = []
         self.__connection = conn.Connection()
-        self.__thread = None
         self.__is_connected = False
         self.__struct = packet_struct()
         self.__qos = qos
@@ -44,10 +46,10 @@ class Client:
         if self.__struct.byte_code[3:4] == b'\x00':  # Verify the reason code; it is the 3rd byte: 0-> success
             self.__is_connected = True
             self.__struct.message = "Connect: success."
-            return self.__struct
+            result.put(self.__struct)
         else:
             self.__struct.message = "Connect: failed."
-            return self.__struct
+            result.put(self.__struct)
 
     """ Defining the disconnect action. """
     def disconnect(self):
@@ -68,14 +70,22 @@ class Client:
             assert self.__struct.byte_code[0:1] == packet_fixed_header['PUBACK']
             if self.__struct.byte_code[-2:-1] == b'':
                 self.__struct.message = "Publish: success."
-                return self.__struct
+                result.put(self.__struct)
             else:
                 self.__struct.message = "Publish: failed."
-                return self.__struct
+                result.put(self.__struct)
         if self.__qos == 1:
             return None
         if self.__qos == 2:
             return None
+
+    """ Defining the pingreq action. """
+    def pingreq(self):
+        pingreq_packet = PingReq()
+        packet = pingreq_packet.parse()
+        self.__connection.send(packet)
+        self.__struct.byte_code = self.__connection.receive(1024)
+        assert self.__struct.byte_code[0:1] == packet_fixed_header['PINGRESP']
 
     """ Defining the subscribe action. """
     def subscribe(self):
@@ -87,10 +97,10 @@ class Client:
         assert self.__struct.byte_code[0:1] == packet_fixed_header['SUBACK']
         if self.__struct.byte_code[-1:] == b'\x01' or self.__struct.byte_code[-1:] == b'\x02' or self.__struct.byte_code[-1:] == b'\x00':
             self.__struct.message = "Subscribe: success.\n"
-            return self.__struct
+            result.put(self.__struct)
         else:
             self.__struct.message = "Subscribe: failed.\n"
-            return self.__struct
+            result.put(self.__struct)
 
     """ Defining the unsubscribe action. """
     def unsubscribe(self):
@@ -101,10 +111,10 @@ class Client:
         assert self.__struct.byte_code[0:1] == packet_fixed_header['UNSUBACK']
         if self.__struct.byte_code[-1:0] == b'\x00':
             self.__struct.message = "Unsubscribe: success.\n"
-            return self.__struct
+            result.put(self.__struct)
         else:
             self.__struct.message = "Unsubscribe failed.\n"
-            return self.__struct
+            result.put(self.__struct)
 
     """ Getter method for is_connected field. """
     def get_is_connected(self):

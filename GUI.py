@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.ttk import Combobox
 from Client import *
 import binascii
+from my_threads import *
 
 """ The GUI class handles the front end of the app: what does the user see.
     It uses tkinter and contains all the graphical elements. """
@@ -13,6 +14,9 @@ class GUI:
         self.__width = 1400
         self.__height = 800
         self.__text_box_log_col = 0
+        self.__gui_thread = None
+        self.__ping_thread = None
+        self.__send_thread = None
 
         """ Create a root app based on the width and height defined """
         self.__root.geometry(str(self.__width) + "x" + str(self.__height))
@@ -40,7 +44,7 @@ class GUI:
         """ Create the gui buttons """
         self.__button_quit = Button(self.__root, text="Quit", command=self.__root.quit)
         self.__button_send = Button(self.__root, text="Send", command=self.__send_button_callback)
-        self.__button_disconnect = Button(self.__root, text="Disconnect", command=self.__disconnect_callback)
+        self.__button_disconnect = Button(self.__root, text="Disconnect", command=self.__disconnect_button_callback)
         self.__button_connect = Button(self.__root, text="Connect", width=10, command=self.__connect_button_callback)
         self.__button_subscribe = Button(self.__root, text="Subscribe", width=10, command=self.__subscribe_button_callback)
         self.__button_unsubscribe = Button(self.__root, text="Unsubscribe", width=10, command=self.__unsubscribe_button_callback)
@@ -75,19 +79,23 @@ class GUI:
 
     """ This method starts the tkinter event loop. """
     def run(self):
-        self.__root.mainloop()
+        self.__gui_thread = Thread(target=self.__root.mainloop())
+        self.__gui_thread.start()
 
     """ Unsubscribe button callback method. """
     def __unsubscribe_button_callback(self):
-        struct_received = self.__client.unsubscribe()
-
+        self.__send_thread = Thread(target=self.__client.unsubscribe)
+        self.__send_thread.run()
+        struct_received = result.get()
         self.__text_box_log_update(struct_received)
 
     """ Send button callback method. """
     def __send_button_callback(self):
         self.__text_box_receive.config(state=NORMAL)
         self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
-        struct_received = self.__client.publish()  # Get the response from the server
+        self.__send_thread = Thread(target=self.__client.publish)
+        self.__send_thread.run()
+        struct_received = result.get()  # Get the response from the server
         self.__text_box_receive.insert(INSERT, "ASC")
         self.__text_box_receive.config(state=DISABLED)
 
@@ -99,7 +107,9 @@ class GUI:
         self.__client.add_topic(topic_subscribe)
         self.__text_box_send.config(state=NORMAL)
         self.__text_box_send.delete('1.0', END)  # Delete text box content before showing new received content
-        struct_received = self.__client.subscribe()  # Get the response from the server
+        self.__send_thread = Thread(target=self.__client.subscribe)
+        self.__send_thread.run()
+        struct_received = result.get()  # Get the response from the server
         self.__text_box_send.config(state=DISABLED)
 
         self.__text_box_log_update(struct_received)
@@ -107,7 +117,11 @@ class GUI:
     """ The connect callback function """
     def __connect_button_callback(self):
         self.__client = Client("123", username=self.__entry_username.get(), password=self.__entry_password.get(), qos=int(self.__qos_combo_box.get()))  # Create a client object when the connect button is pressed
-        struct_received = self.__client.connect()  # Get the response from the server
+
+        self.__send_thread = Thread(target=self.__client.connect)
+        self.__send_thread.run()
+
+        struct_received = result.get()  # Get the response from the server
 
         self.__text_box_log_update(struct_received)
 
@@ -116,11 +130,12 @@ class GUI:
             we dispose the tkinter objects in the root and create the next state """
             self.dispose_connect_gui()
             self.create_main_gui()
+            self.__ping_thread = Ping_Thread(5, self.__client.pingreq)
 
     """ Disconnect button callback method. """
-    def __disconnect_callback(self):
-        self.__client.disconnect()  # Get the response from the server
-
+    def __disconnect_button_callback(self):
+        self.__send_thread = Thread(target=self.__client.disconnect)
+        self.__send_thread.run()
         struct = packet_struct()
         struct.message = "Disconnect: success"
 
@@ -130,6 +145,7 @@ class GUI:
             """ If we successfully disconnect from the broker
             we go back to the connect page"""
             self.dispose_main_gui()
+            self.__ping_thread.stop()  # Stop the ping request packet sender
             self.create_connect_gui()
 
     """ This method creates the connect interface. """

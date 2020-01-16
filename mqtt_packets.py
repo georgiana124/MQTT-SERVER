@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 packet_fixed_header = {
     'CONNECT': b'\x10',
     'CONNACK': b'\x20',
@@ -187,6 +188,18 @@ class Subscribe(Packet):
         remain_length = bytes([len(variable_header)])
         packet += remain_length
         packet += variable_header
+
+        return packet
+
+
+""" The PingReq class. """
+class PingReq(Packet):
+
+    def parse(self):
+        packet = bytearray()
+
+        packet += packet_fixed_header['PINGREQ']
+        packet += b'\x00'
 
         return packet
 
