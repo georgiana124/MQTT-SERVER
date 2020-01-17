@@ -124,16 +124,43 @@ class Publish(Packet):
 
     variable_header = {
         'topic_name': bytearray(),  # string utf8 encoded
-        'packet_identifier': '\x00\x0a',
+        'packet_identifier': b'\x00\x0a',
         'properties': b'\x00'  # no properties
     }
 
+    topic = ""
+    message = ""
+
     def parse(self):
         packet = bytearray()
+        variable_header_format = bytearray()
+        payload = bytearray()
 
         packet += packet_fixed_header['PUBLISH']
 
+        topic_name = bytearray()
+        topic_length = bytearray(2)
+        topic_length[0:1] = b'\x00'
+        topic_length[1:2] = bytes([len(self.topic)])
+        variable_header_format += topic_length
+        topic_name += self.topic.encode('UTF-8')
+        variable_header_format += topic_name
+        variable_header_format += self.variable_header['packet_identifier']
+        variable_header_format += self.variable_header['properties']
+
+        # payload += bytes([len(self.message)])
+        payload += self.message.encode('UTF-8')
+        variable_header_format += payload
+        remain_packet = bytes([len(variable_header_format)])
+        packet += remain_packet
+        packet += variable_header_format
         return packet
+
+    def set_topic(self, _topic):
+        self.topic = _topic
+
+    def set_message(self, _message):
+        self.message = _message
 
     def set_qos(self, _qos):
         self.qos = _qos
@@ -199,7 +226,8 @@ class PingReq(Packet):
         packet = bytearray()
 
         packet += packet_fixed_header['PINGREQ']
-        packet += b'\x00'
+        remain_length = b'\x00'
+        packet += remain_length
 
         return packet
 
@@ -207,9 +235,39 @@ class PingReq(Packet):
 """ The Unsubscribe class. """
 class Unsubscribe(Packet):
 
+    variable_header = {
+        'packet_identifier': b'\x00\x0a',
+        'properties': b'\x00'
+    }
+
+    topic_list = []
+
+    def set_topics(self, _topics):
+        self.topic_list = _topics
+
     def parse(self):
         packet = bytearray()
 
         packet += packet_fixed_header['UNSUBSCRIBE']
+        remain_length = bytearray()
+        payload = bytearray()
+        variable_header_format = bytearray()
+
+        variable_header_format += self.variable_header['packet_identifier']
+
+        for topic in self.topic_list:
+            aux_payload = bytearray()
+            length_topic = bytearray(2)
+            length_topic[0:1] = b'\x00'
+            length_topic[1:2] = bytes([len(topic)])
+            aux_payload += length_topic
+            aux_payload += topic.encode('UTF-8')
+            payload += aux_payload
+
+        variable_header_format += payload
+
+        remain_length += bytes([len(variable_header_format)])
+        packet += remain_length
+        packet += variable_header_format
 
         return packet

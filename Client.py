@@ -20,7 +20,10 @@ class Client:
         self.__client_id = client_id
         self.__password = password
         self.__host_ip = host_ip
+        self.__topic_publish = ""
+        self.__message_publish = ""
         self.__topics = []
+        self.__unsubscribe_topics = []
         self.__connection = conn.Connection()
         self.__is_connected = False
         self.__struct = packet_struct()
@@ -63,21 +66,19 @@ class Client:
     def publish(self):
         publish_packet = Publish()
         publish_packet.set_qos(self.__qos)
-        if self.__qos == 0:
-            packet = publish_packet.parse()
-            self.__connection.send(packet)
-            self.__struct.byte_code = self.__connection.receive(1024)
-            assert self.__struct.byte_code[0:1] == packet_fixed_header['PUBACK']
-            if self.__struct.byte_code[-2:-1] == b'':
-                self.__struct.message = "Publish: success."
-                result.put(self.__struct)
-            else:
-                self.__struct.message = "Publish: failed."
-                result.put(self.__struct)
-        if self.__qos == 1:
-            return None
-        if self.__qos == 2:
-            return None
+        publish_packet.set_topic(self.__topic_publish)
+        publish_packet.set_message(self.__message_publish)
+
+        packet = publish_packet.parse()
+        self.__connection.send(packet)
+        self.__struct.byte_code = b''  # self.__connection.receive(1024)
+        # assert self.__struct.byte_code[0:1] == packet_fixed_header['PUBACK']
+        if self.__struct.byte_code[-2:-1] == b'':
+            self.__struct.message = "Publish: success."
+            result.put(self.__struct)
+        else:
+            self.__struct.message = "Publish: failed."
+            result.put(self.__struct)
 
     """ Defining the pingreq action. """
     def pingreq(self):
@@ -91,6 +92,7 @@ class Client:
     def subscribe(self):
         subscribe_packet = Subscribe()
         subscribe_packet.set_topics(self.__topics)
+        self.__topics = []
         packet = subscribe_packet.parse()
         self.__connection.send(packet)
         self.__struct.byte_code = self.__connection.receive(1024)
@@ -105,11 +107,13 @@ class Client:
     """ Defining the unsubscribe action. """
     def unsubscribe(self):
         unsubscribe_packet = Unsubscribe()
+        unsubscribe_packet.set_topics(self.__unsubscribe_topics)
+        self.__unsubscribe_topics = []
         packet = unsubscribe_packet.parse()
         self.__connection.send(packet)
         self.__struct.byte_code = self.__connection.receive(1024)
         assert self.__struct.byte_code[0:1] == packet_fixed_header['UNSUBACK']
-        if self.__struct.byte_code[-1:0] == b'\x00':
+        if self.__struct.byte_code[-1:] == b'\x00':
             self.__struct.message = "Unsubscribe: success.\n"
             result.put(self.__struct)
         else:
@@ -120,6 +124,16 @@ class Client:
     def get_is_connected(self):
         return self.__is_connected
 
+    """ Append method for the unsubscribe topics. """
+    def add_unsubscribe_topic(self, _unsubscribe_topic):
+        self.__unsubscribe_topics.append(_unsubscribe_topic)
+
     """ Append method for the list of topics. """
     def add_topic(self, _topic):
         self.__topics.append(_topic)
+
+    def set_message_publish(self, _message):
+        self.__message_publish = _message
+
+    def set_topic_publish(self, _topic):
+        self.__topic_publish = _topic

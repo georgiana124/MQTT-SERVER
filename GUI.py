@@ -95,17 +95,26 @@ class GUI:
 
     """ Unsubscribe button callback method. """
     def __unsubscribe_button_callback(self):
+        topic_unsubscribe = self.__entry_subscribe.get()
+        self.__client.add_unsubscribe_topic(topic_unsubscribe)
         """ Create and start a thread for unsubscribe action. """
         self.__send_thread = Thread(target=self.__client.unsubscribe)
         self.__send_thread.run()
 
         struct_received = result.get()
+
+        self.__text_box_send.config(state=DISABLED)
         self.__text_box_log_update(struct_received)
 
     """ Send button callback method. """
     def __send_button_callback(self):
         self.__text_box_receive.config(state=NORMAL)
         self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
+
+        topic_publish = self.__entry_topic.get()
+        message_publish = self.__entry_message_send.get()
+        self.__client.set_topic_publish(topic_publish)
+        self.__client.set_message_publish(message_publish)
 
         """ Create and start a thread for publish action. """
         self.__send_thread = Thread(target=self.__client.publish)
