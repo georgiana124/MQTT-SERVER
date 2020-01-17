@@ -121,8 +121,8 @@ class GUI:
         self.__send_thread.run()
 
         struct_received = result.get()  # Get the response from the server
-        self.__text_box_receive.insert(INSERT, "ASC")
-        self.__text_box_receive.config(state=DISABLED)
+        self.__text_box_send.insert(INSERT, message_publish+'\n')
+        self.__text_box_send.config(state=DISABLED)
 
         self.__text_box_log_update(struct_received)
 
