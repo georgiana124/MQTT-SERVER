@@ -146,9 +146,8 @@ class GUI:
         self.__send_thread = Thread(target=self.__client.subscribe)
         self.__send_thread.run()
 
-        self.__receive_thread = Receive_Message(0.5, self.__client.get_connection().receive)
-        self.__receive_thread.set_target_2(self.__insert_text_box_receive)
-        self.__receive_thread.start()
+        # self.__receive_thread = Receive_Message(self.__client.get_connection().receive)
+        # self.__receive_thread._run()
 
         struct_received = result.get()  # Get the response from the server
         self.__text_box_send.config(state=DISABLED)
