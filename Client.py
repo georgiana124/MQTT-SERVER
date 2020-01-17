@@ -120,6 +120,9 @@ class Client:
             self.__struct.message = "Unsubscribe failed.\n"
             result.put(self.__struct)
 
+    def get_connection(self):
+        return self.__connection
+
     """ Getter method for is_connected field. """
     def get_is_connected(self):
         return self.__is_connected

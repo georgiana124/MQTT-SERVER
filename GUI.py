@@ -17,6 +17,7 @@ class GUI:
         self.__gui_thread = None
         self.__ping_thread = None
         self.__send_thread = None
+        self.__receive_thread = None
 
         """ Create a root app based on the width and height defined """
         self.__root.geometry(str(self.__width) + "x" + str(self.__height))
@@ -34,7 +35,7 @@ class GUI:
         self.__label_subscribe_to = Label(self.__root, text='Topic')
         self.__label_qos = Label(self.__root, text='QoS')
         self.__label_logger = Label(self.__root, text='Logger')
-        self.__label_send = Label(self.__root, text ="Send Messages")
+        self.__label_send = Label(self.__root, text="Send Messages")
         self.__label_manage = Label(self.__root, text="Manage Subscriptions")
 
         """ Create the gui entries """
@@ -65,6 +66,18 @@ class GUI:
 
         """ Create the connect interface """
         self.create_connect_gui()
+
+    def __insert_text_box_send(self, _message):
+        self.__text_box_send.config(state=NORMAL)
+        self.__text_box_send.delete('1.0', END)  # Delete text box content before showing new published content
+        self.__text_box_send.insert(INSERT, _message + '\n')
+        self.__text_box_send.config(state=DISABLED)
+
+    def __insert_text_box_receive(self, _message):
+        self.__text_box_receive.config(state=NORMAL)
+        self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
+        self.__text_box_receive.insert(INSERT, _message + '\n')
+        self.__text_box_receive.config(state=DISABLED)
 
     def __quit_button_callback(self):
         if self.__client is not None:
@@ -103,14 +116,12 @@ class GUI:
 
         struct_received = result.get()
 
+        self.__receive_thread.stop()
         self.__text_box_send.config(state=DISABLED)
         self.__text_box_log_update(struct_received)
 
     """ Send button callback method. """
     def __send_button_callback(self):
-        self.__text_box_receive.config(state=NORMAL)
-        self.__text_box_receive.delete('1.0', END)  # Delete text box content before showing new published content
-
         topic_publish = self.__entry_topic.get()
         message_publish = self.__entry_message_send.get()
         self.__client.set_topic_publish(topic_publish)
@@ -121,9 +132,7 @@ class GUI:
         self.__send_thread.run()
 
         struct_received = result.get()  # Get the response from the server
-        self.__text_box_send.insert(INSERT, message_publish+'\n')
-        self.__text_box_send.config(state=DISABLED)
-
+        self.__insert_text_box_send(message_publish)
         self.__text_box_log_update(struct_received)
 
     """ Subscribe button callback method. """
@@ -136,6 +145,10 @@ class GUI:
         """ Create and start a thread for subscribing action. """
         self.__send_thread = Thread(target=self.__client.subscribe)
         self.__send_thread.run()
+
+        self.__receive_thread = Receive_Message(0.5, self.__client.get_connection().receive)
+        self.__receive_thread.set_target_2(self.__insert_text_box_receive)
+        self.__receive_thread.start()
 
         struct_received = result.get()  # Get the response from the server
         self.__text_box_send.config(state=DISABLED)
@@ -244,7 +257,7 @@ class GUI:
         self.__label_send_message.place(x=self.__width/5*2, y=self.__height/7*3-30)
         self.__label_receive_message.place(x=self.__width/5*2, y=self.__height/7-30)
         self.__label_publish_message.place(x=self.__width/8-60, y=self.__height/7+30)
-        self.__label_manage.place(x=self.__width/8,y=self.__height*3/8)
+        self.__label_manage.place(x=self.__width/8, y=self.__height*3/8)
         self.__label_send.place(x=self.__width/8, y=self.__height/10)
 
         # Text boxes

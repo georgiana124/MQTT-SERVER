@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-
 packet_fixed_header = {
     'CONNECT': b'\x10',
     'CONNACK': b'\x20',
@@ -145,7 +144,7 @@ class Publish(Packet):
         variable_header_format += topic_length
         topic_name += self.topic.encode('UTF-8')
         variable_header_format += topic_name
-        variable_header_format += self.variable_header['packet_identifier']
+        # variable_header_format += self.variable_header['packet_identifier']
         variable_header_format += self.variable_header['properties']
 
         # payload += bytes([len(self.message)])
